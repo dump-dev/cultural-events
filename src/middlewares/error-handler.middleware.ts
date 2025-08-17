@@ -21,5 +21,7 @@ export default function errorHandlerMiddleware(
     }
   }
 
+  console.log(err)
+
   return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
 }

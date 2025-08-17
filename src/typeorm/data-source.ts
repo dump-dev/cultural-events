@@ -2,8 +2,9 @@ import { DataSource } from "typeorm";
 import { DataSourceOptions } from "typeorm";
 import path from "path";
 import User from "./entities/User";
+import Organizer from "./entities/Organizer";
 
-const entities: Required<DataSourceOptions["entities"]> = [User];
+const entities: Required<DataSourceOptions["entities"]> = [User, Organizer];
 
 const developmentOptions: DataSourceOptions = {
   type: "sqlite",

@@ -4,10 +4,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import bcrypt from "bcrypt";
+import Organizer from "./Organizer";
 
 @Entity()
 export default class User {
@@ -30,6 +32,9 @@ export default class User {
       this.password = await bcrypt.hash(this.password, 10);
     }
   }
+
+  @OneToOne(() => Organizer, (organizer) => organizer.user)
+  organizer: Organizer;
 
   @CreateDateColumn()
   createdAt: Date;
