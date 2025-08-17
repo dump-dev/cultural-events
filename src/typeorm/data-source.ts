@@ -18,20 +18,18 @@ const productionsOptions: DataSourceOptions = {
   entities: entities,
 };
 
-const AppDataSource = new DataSource(
+export const AppDataSource = new DataSource(
   process.env.NODE_ENV === "production"
     ? productionsOptions
     : developmentOptions
 );
 
-let dataSource: DataSource | null = null;
-
 export async function connectDB() {
-  dataSource = await AppDataSource.initialize();
+  await AppDataSource.initialize();
   console.log("✅ initialized database connection");
 }
 
 export async function closeConnectionDB() {
-  await dataSource?.destroy();
+  await AppDataSource.destroy()
   console.log("📴 closed database connection");
 }
