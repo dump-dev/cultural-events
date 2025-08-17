@@ -2,11 +2,13 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import User from "./User";
 import { OrganizerContacts } from "../../@types/OrganizerContact";
+import CulturalEvent from "./CulturalEvent";
 
 @Entity()
 export default class Organizer {
@@ -25,4 +27,7 @@ export default class Organizer {
 
   @Column("simple-json", { nullable: true })
   contacts: OrganizerContacts | null;
+
+  @OneToMany(() => CulturalEvent, (cutural) => cutural.organizer)
+  cuturalEvents: Array<CulturalEvent>;
 }
