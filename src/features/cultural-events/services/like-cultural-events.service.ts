@@ -5,6 +5,8 @@ import LikeCulturalEvent from "../../../typeorm/entities/LikeCulturalEvent";
 import { LikeCulturalEventDTO } from "./dtos/like-cultural-event.dto";
 import { UserNotFoundError } from "../../../@types/errors/UserNotFoundError";
 import { CulturalEventNotFoundError } from "../../../@types/errors/CulturalEventNotFoundError";
+import { UnlikeCulturalEventDTO } from "./dtos/unlike-cultural-event.dto";
+import LikeNotFoundError from "../../../@types/errors/LikeNotFoundError";
 
 export default class LikeCulturalEventService {
   constructor(
@@ -24,5 +26,16 @@ export default class LikeCulturalEventService {
       throw new CulturalEventNotFoundError(likeDTO.culturalEventId);
 
     return this.likeCulturalEventRepository.save({ user, culturalEvent });
+  }
+
+  async unlike(unlikeDTO: UnlikeCulturalEventDTO) {
+    const like = await this.likeCulturalEventRepository.findOneBy({
+      user_id: unlikeDTO.userId,
+      cultural_event_id: unlikeDTO.culturalEventId,
+    });
+
+    if (!like) throw new LikeNotFoundError();
+
+    return this.likeCulturalEventRepository.remove(like);
   }
 }

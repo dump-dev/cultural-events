@@ -4,6 +4,7 @@ import { createCuturalEventSchema } from "./validations/schemas/create-cutural-e
 import { StatusCodes } from "http-status-codes";
 import LikeCulturalEventService from "./services/like-cultural-events.service";
 import { likeCulturalEventSchema } from "./validations/schemas/like-cultural-event.schema";
+import { unlikeCulturalEventSchema } from "./validations/schemas/unlike-cultural-event.schema";
 
 export default class CuturalEventsController {
   constructor(
@@ -40,5 +41,19 @@ export default class CuturalEventsController {
       parseResult.data
     );
     return res.status(StatusCodes.CREATED).send(likeCulturalEvent);
+  }
+
+  async unlike(req: Request, res: Response) {
+    const parseResult = unlikeCulturalEventSchema.safeParse({
+      culturalEventId: req.params?.culturalEventId,
+      userId: req.body?.userId,
+    });
+
+    if (!parseResult.success) {
+      return res.status(StatusCodes.BAD_REQUEST).send(parseResult.error.issues);
+    }
+
+    await this.likeCulturalEventService.unlike(parseResult.data);
+    return res.sendStatus(StatusCodes.NO_CONTENT);
   }
 }

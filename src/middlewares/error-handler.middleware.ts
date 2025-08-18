@@ -4,6 +4,7 @@ import { QueryFailedError } from "typeorm";
 import { OrganizerNotFoundError } from "../@types/errors/OrganizerNotFoundError";
 import { UserNotFoundError } from "../@types/errors/UserNotFoundError";
 import { CulturalEventNotFoundError } from "../@types/errors/CulturalEventNotFoundError";
+import LikeNotFoundError from "../@types/errors/LikeNotFoundError";
 
 export default function errorHandlerMiddleware(
   err: any,
@@ -38,6 +39,12 @@ export default function errorHandlerMiddleware(
   }
 
   if (err instanceof CulturalEventNotFoundError) {
+    return res.status(StatusCodes.NOT_FOUND).send({
+      message: err.message,
+    });
+  }
+
+  if (err instanceof LikeNotFoundError) {
     return res.status(StatusCodes.NOT_FOUND).send({
       message: err.message,
     });

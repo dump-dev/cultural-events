@@ -37,5 +37,8 @@ culturalEventsRouter.get("/", (req, res) =>
 culturalEventsRouter.post("/:culturalEventId/like", (req, res) =>
   culturalEventsController.like(req, res)
 );
+culturalEventsRouter.delete("/:culturalEventId/like", (req, res) =>
+  culturalEventsController.unlike(req, res)
+);
 
 export default culturalEventsRouter;
