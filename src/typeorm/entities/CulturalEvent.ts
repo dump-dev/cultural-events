@@ -2,11 +2,13 @@ import {
   Column,
   Entity,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import Location from "./Location";
 import Organizer from "./Organizer";
+import LikeCulturalEvent from "./LikeCulturalEvent";
 
 @Entity()
 export default class CulturalEvent {
@@ -29,4 +31,9 @@ export default class CulturalEvent {
     cascade: true,
   })
   location: Location;
+
+  @OneToMany(() => LikeCulturalEvent, likes => likes.culturalEvent, {
+    nullable: true
+  })
+  likes: Array<LikeCulturalEvent>
 }

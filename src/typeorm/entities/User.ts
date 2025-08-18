@@ -4,12 +4,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import bcrypt from "bcrypt";
 import Organizer from "./Organizer";
+import LikeCulturalEvent from "./LikeCulturalEvent";
 
 @Entity()
 export default class User {
@@ -35,6 +37,9 @@ export default class User {
 
   @OneToOne(() => Organizer, (organizer) => organizer.user)
   organizer: Organizer;
+
+  @OneToMany(() => LikeCulturalEvent, likes => likes.user, {nullable: true})
+  likes: Array<LikeCulturalEvent>
 
   @CreateDateColumn()
   createdAt: Date;

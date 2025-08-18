@@ -5,12 +5,14 @@ import User from "./entities/User";
 import Organizer from "./entities/Organizer";
 import Location from "./entities/Location";
 import CulturalEvent from "./entities/CulturalEvent";
+import LikeCulturalEvent from "./entities/LikeCulturalEvent";
 
 const entities: Required<DataSourceOptions["entities"]> = [
   User,
   Organizer,
   Location,
   CulturalEvent,
+  LikeCulturalEvent
 ];
 
 const developmentOptions: DataSourceOptions = {
