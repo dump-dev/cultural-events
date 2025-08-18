@@ -13,6 +13,6 @@ export default class AuthController {
     }
     const userParsed = parseResult.data;
     const user = await this.createUserService.create(userParsed);
-    return res.send(user);
+    return res.status(StatusCodes.CREATED).send(user);
   }
 }

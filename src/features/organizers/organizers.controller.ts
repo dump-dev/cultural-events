@@ -18,6 +18,6 @@ export default class OrganizersController {
 
   async getAll(req: Request, res: Response) {
     const organizers = await this.organizersService.getOrganizers()
-    return res.send(organizers)
+    return res.status(StatusCodes.CREATED).send(organizers)
   }
 }
