@@ -1,8 +1,8 @@
-import { QueryFailedError, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import User from "../../../typeorm/entities/User";
 import { RegisterUserDTO } from "./dtos/register-user.dto";
 
-export default class CreateUserService {
+export default class RegiserUserService {
   constructor(private userRepository: Repository<User>) {}
 
   async create(registerUserDTO: RegisterUserDTO) {

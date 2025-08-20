@@ -39,6 +39,10 @@ export default class User {
     }
   }
 
+  async verifyPassword(password: string) {
+    return await bcrypt.compare(password, this.password);
+  }
+
   @OneToOne(() => Organizer, (organizer) => organizer.user)
   organizer: Organizer;
 
