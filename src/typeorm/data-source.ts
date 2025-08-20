@@ -1,18 +1,21 @@
-import { DataSource } from "typeorm";
-import { DataSourceOptions } from "typeorm";
 import path from "path";
-import User from "./entities/User";
-import Organizer from "./entities/Organizer";
-import Location from "./entities/Location";
+import { DataSource, DataSourceOptions } from "typeorm";
 import CulturalEvent from "./entities/CulturalEvent";
 import LikeCulturalEvent from "./entities/LikeCulturalEvent";
+import Location from "./entities/Location";
+import Organizer from "./entities/Organizer";
+import Permission from "./entities/Permission";
+import RolePermission from "./entities/RolePermission";
+import User from "./entities/User";
 
 const entities: Required<DataSourceOptions["entities"]> = [
   User,
   Organizer,
   Location,
   CulturalEvent,
-  LikeCulturalEvent
+  LikeCulturalEvent,
+  Permission,
+  RolePermission
 ];
 
 const developmentOptions: DataSourceOptions = {
