@@ -1,15 +1,13 @@
 import { Router } from "express";
+import { AppDataSource } from "../../typeorm/data-source";
+import CulturalEvent from "../../typeorm/entities/CulturalEvent";
+import User from "../../typeorm/entities/User";
 import UsersController from "./users.controller";
 import UsersService from "./users.service";
-import { AppDataSource } from "../../typeorm/data-source";
-import User from "../../typeorm/entities/User";
-import LikeCulturalEvent from "../../typeorm/entities/LikeCulturalEvent";
-import CulturalEvent from "../../typeorm/entities/CulturalEvent";
 
 const usersRouter = Router();
 const usersRepository = AppDataSource.getRepository(User);
 const culturalEventRepository =AppDataSource.getRepository(CulturalEvent)
-  AppDataSource.getRepository(LikeCulturalEvent);
   
 const usersService = new UsersService(
   usersRepository,
