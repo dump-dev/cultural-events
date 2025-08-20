@@ -1,9 +1,3 @@
-export const RoleEnum = {
-  USER: "user",
-  ORGANIZER: "organizer",
-  ADMIN: "admin",
-} as const;
+import { roles } from "../constants/role";
 
-export const Roles = Object.values(RoleEnum);
-
-export type Role = (typeof Roles)[number];
+export type Role = (typeof roles)[number];

@@ -1,14 +1,16 @@
 import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import { Permission, Permissions } from "../../@types/Permission";
+import { Permission } from "../../@types/Permission";
 import PermissionEntity from "./Permission";
-import { Role, Roles } from "../../@types/Role";
+import { Role } from "../../@types/Role";
+import { permissions } from "../../constants/permission";
+import { roles } from "../../constants/role";
 
 @Entity()
 export default class RolePermission {
-  @PrimaryColumn({ enum: Roles })
+  @PrimaryColumn({ enum: roles })
   role_name: Role;
 
-  @PrimaryColumn({ enum: Permissions })
+  @PrimaryColumn({ enum: permissions })
   permission_name: Permission;
 
   @ManyToOne(() => PermissionEntity, { onDelete: "CASCADE" })

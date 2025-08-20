@@ -1,5 +1,6 @@
-import { PermissionEnum } from "../@types/Permission";
-import { Role, RoleEnum } from "../@types/Role";
+import { Role } from "../@types/Role";
+import { PermissionEnum } from "../constants/permission";
+import { RoleEnum } from "../constants/role";
 import { AppDataSource } from "./data-source";
 import Permission from "./entities/Permission";
 import RolePermission from "./entities/RolePermission";

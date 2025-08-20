@@ -12,7 +12,8 @@ import {
 import bcrypt from "bcrypt";
 import Organizer from "./Organizer";
 import LikeCulturalEvent from "./LikeCulturalEvent";
-import { Role, RoleEnum, Roles } from "../../@types/Role";
+import { Role } from "../../@types/Role";
+import { RoleEnum, roles } from "../../constants/role";
 
 @Entity()
 export default class User {
@@ -28,7 +29,7 @@ export default class User {
   @Column()
   password: string;
 
-  @Column({ enum: Roles, default: RoleEnum.USER })
+  @Column({ enum: roles, default: RoleEnum.USER })
   role: Role;
 
   @BeforeInsert()
