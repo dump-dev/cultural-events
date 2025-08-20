@@ -12,6 +12,7 @@ import {
 import bcrypt from "bcrypt";
 import Organizer from "./Organizer";
 import LikeCulturalEvent from "./LikeCulturalEvent";
+import { Role, RoleEnum, Roles } from "../../@types/Role";
 
 @Entity()
 export default class User {
@@ -27,6 +28,9 @@ export default class User {
   @Column()
   password: string;
 
+  @Column({ enum: Roles, default: RoleEnum.USER })
+  role: Role;
+
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword() {
@@ -38,8 +42,8 @@ export default class User {
   @OneToOne(() => Organizer, (organizer) => organizer.user)
   organizer: Organizer;
 
-  @OneToMany(() => LikeCulturalEvent, likes => likes.user, {nullable: true})
-  likes: Array<LikeCulturalEvent>
+  @OneToMany(() => LikeCulturalEvent, (likes) => likes.user, { nullable: true })
+  likes: Array<LikeCulturalEvent>;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -1,5 +1,5 @@
 import { PermissionEnum } from "../@types/Permission";
-import { RoleEnum } from "../@types/Role";
+import { Role, RoleEnum } from "../@types/Role";
 import { AppDataSource } from "./data-source";
 import Permission from "./entities/Permission";
 import RolePermission from "./entities/RolePermission";
@@ -59,7 +59,7 @@ async function insertRolePermissions() {
   for (let [role, permissions] of roleAndPermissions) {
     for (let permission of permissions) {
       await rolePermissionRepository.save({
-        role_name: role,
+        role_name: role as Role,
         permission_name: permission,
       });
     }

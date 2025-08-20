@@ -1,7 +1,9 @@
 export const RoleEnum = {
-    USER: 'user',
-    ORGANIZER: 'organizer',
-    ADMIN: 'admin'
-} as const
+  USER: "user",
+  ORGANIZER: "organizer",
+  ADMIN: "admin",
+} as const;
 
-export type Role = keyof typeof RoleEnum
+export const Roles = Object.values(RoleEnum);
+
+export type Role = (typeof Roles)[number];
