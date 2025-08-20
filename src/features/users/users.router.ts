@@ -16,6 +16,7 @@ const usersService = new UsersService(
   culturalEventRepository
 );
 const usersController = new UsersController(usersService);
+usersRouter.post("/", (req, res) => usersController.create(req, res));
 usersRouter.get("/", (req, res) => usersController.getAll(req, res));
 usersRouter.get("/:userId/likes", (req, res) => usersController.getLikes(req, res));
 

@@ -1,5 +1,5 @@
 import * as z from "zod";
-import registerUserSchema from "../../../auth/validations/schemas/register-user.schema";
+import createUserSchema from "../../../users/validations/schemas/create-user.schema";
 import { ContactType } from "../../../../@types/OrganizerContact";
 
 const contacstSchema = z
@@ -12,7 +12,7 @@ const contacstSchema = z
   .partial();
   
 export const createOrganizerSchema = z.object({
-  ...registerUserSchema.shape,
+  ...createUserSchema.shape,
   displayName: z.string().min(3),
   description: z.string().min(3),
   contacts: contacstSchema.optional(),

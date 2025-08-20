@@ -1,9 +1,9 @@
 import * as z from "zod";
 
-const registerUserSchema = z.object({
+const createUserSchema = z.object({
   name: z.string().min(3),
   email: z.email(),
   password: z.string().min(8),
 });
 
-export default registerUserSchema
+export default createUserSchema

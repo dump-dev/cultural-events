@@ -2,9 +2,20 @@ import { Request, Response } from "express";
 import UsersService from "./services/users.service";
 import { getLikesSchema } from "./validations/schemas/get-likes.schema";
 import { StatusCodes } from "http-status-codes";
+import createUserSchema from "./validations/schemas/create-user.schema";
 
 export default class UsersController {
   constructor(private usersService: UsersService) {}
+
+  async create(req: Request, res: Response) {
+    const parseResult = createUserSchema.safeParse(req.body);
+    if (!parseResult.success) {
+      return res.status(StatusCodes.BAD_REQUEST).send(parseResult.error.issues);
+    }
+    const userParsed = parseResult.data;
+    const user = await this.usersService.create(userParsed);
+    return res.status(StatusCodes.CREATED).send(user);
+  }
 
   async getAll(_: Request, res: Response) {
     const users = await this.usersService.getUsers();
@@ -18,7 +29,7 @@ export default class UsersController {
     }
 
     const { userId } = parseResult.data;
-    const likes = await this.usersService.getLikes(userId)
+    const likes = await this.usersService.getLikes(userId);
     return res.send(likes);
   }
 }
