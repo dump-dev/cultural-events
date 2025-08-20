@@ -1,4 +1,4 @@
-import { OrganizerContacts } from "../../../../@types/OrganizerContact";
+import { OrganizerContacts } from "../types/OrganizerContact";
 
 export type CreateOrganizersDTO = {
   name: string;

@@ -5,8 +5,8 @@ import LikeCulturalEvent from "../../typeorm/entities/LikeCulturalEvent";
 import Organizer from "../../typeorm/entities/Organizer";
 import User from "../../typeorm/entities/User";
 import CuturalEventsController from "./cultural-events.controller";
-import CuturalEventsService from "./services/cultural-events.service";
-import LikeCulturalEventService from "./services/like-cultural-events.service";
+import CuturalEventsService from "./cultural-events.service";
+import LikeCulturalEventService from "./like-cultural-events.service";
 
 const culturalEventsRouter = Router();
 const userRepository = AppDataSource.getRepository(User);

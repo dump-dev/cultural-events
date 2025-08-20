@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import OrganizersService from "./services/organizers.service";
-import { createOrganizerSchema } from "./validations/schemas/create-organizer.schema";
+import OrganizersService from "./organizers.service";
 import { StatusCodes } from "http-status-codes";
+import { createOrganizerSchema } from "./schemas/create-organizer.schema";
 
 export default class OrganizersController {
   constructor(private organizersService: OrganizersService) {}
@@ -17,7 +17,7 @@ export default class OrganizersController {
   }
 
   async getAll(req: Request, res: Response) {
-    const organizers = await this.organizersService.getOrganizers()
-    return res.status(StatusCodes.CREATED).send(organizers)
+    const organizers = await this.organizersService.getOrganizers();
+    return res.status(StatusCodes.CREATED).send(organizers);
   }
 }

@@ -1,6 +1,7 @@
 import * as z from "zod";
-import createUserSchema from "../../../users/validations/schemas/create-user.schema";
-import { ContactType } from "../../../../@types/OrganizerContact";
+import { ContactType } from "../types/OrganizerContact";
+import createUserSchema from "../../users/schemas/create-user.schema";
+
 
 const contacstSchema = z
   .object({

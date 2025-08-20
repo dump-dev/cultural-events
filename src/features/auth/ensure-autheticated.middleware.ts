@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import AuthService from "../features/auth/services/auth.service";
+import AuthService from "./auth.service";
 
 export default async function ensureAutheticated(
   req: Request,

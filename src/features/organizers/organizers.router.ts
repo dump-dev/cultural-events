@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { AppDataSource } from "../../typeorm/data-source";
-import OrganizersService from "./services/organizers.service";
+import OrganizersService from "./organizers.service";
 import OrganizersController from "./organizers.controller";
 import Organizer from "../../typeorm/entities/Organizer";
 

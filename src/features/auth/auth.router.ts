@@ -2,7 +2,7 @@ import { Router } from "express";
 import { AppDataSource } from "../../typeorm/data-source";
 import User from "../../typeorm/entities/User";
 import AuthController from "./auth.controller";
-import AuthService from "./services/auth.service";
+import AuthService from "./auth.service";
 
 const authRouter = Router();
 

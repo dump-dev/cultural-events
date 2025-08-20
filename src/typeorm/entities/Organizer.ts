@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import User from "./User";
-import { OrganizerContacts } from "../../@types/OrganizerContact";
+import { OrganizerContacts } from "../../features/organizers/types/OrganizerContact";
 import CulturalEvent from "./CulturalEvent";
 
 @Entity()

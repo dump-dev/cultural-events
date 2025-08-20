@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import AuthService from "./services/auth.service";
-import { credentialsSchema } from "./validations/schemas/credentials.schema";
+import AuthService from "./auth.service";
+import { credentialsSchema } from "./schemas/credentials.schema";
 
 export default class AuthController {
   constructor(private authService: AuthService) {}

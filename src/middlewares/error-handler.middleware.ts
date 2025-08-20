@@ -5,7 +5,7 @@ import { OrganizerNotFoundError } from "../@types/errors/OrganizerNotFoundError"
 import { UserNotFoundError } from "../@types/errors/UserNotFoundError";
 import { CulturalEventNotFoundError } from "../@types/errors/CulturalEventNotFoundError";
 import LikeNotFoundError from "../@types/errors/LikeNotFoundError";
-import { InvalidCredentialsError } from "../features/auth/services/auth.service";
+import { InvalidCredentialsError } from "../features/auth/types/InvalidCredentialsError";
 
 export default function errorHandlerMiddleware(
   err: any,

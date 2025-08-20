@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
-import Organizer from "../../../typeorm/entities/Organizer";
-import User from "../../../typeorm/entities/User";
+import Organizer from "../../typeorm/entities/Organizer";
+import User from "../../typeorm/entities/User";
 import { CreateOrganizersDTO } from "./dtos/create-organizer.dto";
 
 export default class OrganizersService {

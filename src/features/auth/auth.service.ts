@@ -1,8 +1,9 @@
 import { Repository } from "typeorm";
-import User from "../../../typeorm/entities/User";
+import User from "../../typeorm/entities/User";
 import { CredentialsDTO } from "./dtos/credentials.dto";
 import jwt from "jsonwebtoken";
 import { CreateAccessTokenDTO } from "./dtos/create-access-token.dto";
+import { InvalidCredentialsError } from "./types/InvalidCredentialsError";
 
 export default class AuthService {
   constructor(private userRepository: Repository<User>) {}
@@ -41,18 +42,5 @@ export default class AuthService {
   }
 }
 
-export class AuthError extends Error {}
 
-export class InvalidTokenError extends AuthError {
-  constructor() {
-    super("invalid token");
-    this.name = "InvalidTokenError";
-  }
-}
 
-export class InvalidCredentialsError extends AuthError {
-  constructor() {
-    super("user or password is invalid");
-    this.name = "AuthLoginUserNotFoundError";
-  }
-}

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import UsersService from "./services/users.service";
-import { getLikesSchema } from "./validations/schemas/get-likes.schema";
+import UsersService from "./users.service";
+import { getLikesSchema } from "./schemas/get-likes.schema";
 import { StatusCodes } from "http-status-codes";
-import createUserSchema from "./validations/schemas/create-user.schema";
+import createUserSchema from "./schemas/create-user.schema";
 
 export default class UsersController {
   constructor(private usersService: UsersService) {}

@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import CuturalEventsService from "./services/cultural-events.service";
-import { createCuturalEventSchema } from "./validations/schemas/create-cutural-event.schema";
+import CuturalEventsService from "./cultural-events.service";
+import { createCuturalEventSchema } from "./schemas/create-cutural-event.schema";
 import { StatusCodes } from "http-status-codes";
-import LikeCulturalEventService from "./services/like-cultural-events.service";
-import { likeCulturalEventSchema } from "./validations/schemas/like-cultural-event.schema";
-import { unlikeCulturalEventSchema } from "./validations/schemas/unlike-cultural-event.schema";
+import LikeCulturalEventService from "./like-cultural-events.service";
+import { likeCulturalEventSchema } from "./schemas/like-cultural-event.schema";
+import { unlikeCulturalEventSchema } from "./schemas/unlike-cultural-event.schema";
 
 export default class CuturalEventsController {
   constructor(

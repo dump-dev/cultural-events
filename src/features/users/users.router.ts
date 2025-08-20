@@ -1,6 +1,6 @@
 import { Router } from "express";
 import UsersController from "./users.controller";
-import UsersService from "./services/users.service";
+import UsersService from "./users.service";
 import { AppDataSource } from "../../typeorm/data-source";
 import User from "../../typeorm/entities/User";
 import LikeCulturalEvent from "../../typeorm/entities/LikeCulturalEvent";
