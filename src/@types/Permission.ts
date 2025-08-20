@@ -18,3 +18,7 @@ export const PermissionEnum = {
   CULTURAL_EVENT_UPDATE: "cultural-event:update",
   CULTURAL_EVENT_DELETE: "cultural-event:delete",
 } as const;
+
+export const Permissions = Object.values(PermissionEnum)
+
+export type Permission = typeof Permissions[number]
