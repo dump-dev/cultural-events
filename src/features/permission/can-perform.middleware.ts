@@ -5,7 +5,10 @@ import { Role } from "../../@types/Role";
 import { AppDataSource } from "../../typeorm/data-source";
 import RolePermission from "../../typeorm/entities/RolePermission";
 
-export default function canPerform(action: Permission | Array<Permission>) {
+export default function canPerform(
+  action: Permission | Array<Permission>,
+  requiredRole?: Role
+) {
   const verifyByRole = async (role: Role) => {
     const rolePermissionRepository =
       AppDataSource.getRepository(RolePermission);
@@ -24,12 +27,13 @@ export default function canPerform(action: Permission | Array<Permission>) {
   };
 
   return async (req: Request, res: Response, next: NextFunction) => {
+    if (requiredRole && requiredRole !== req.user.role) {
+      return res.sendStatus(StatusCodes.FORBIDDEN);
+    }
     const userCanPerformAction = await verifyByRole(req.user.role);
 
     if (!userCanPerformAction) {
-      return res.status(StatusCodes.FORBIDDEN).send({
-        message: "You dont't have permission for execute this action",
-      });
+      return res.sendStatus(StatusCodes.FORBIDDEN)
     }
 
     return next();
