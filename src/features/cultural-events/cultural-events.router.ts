@@ -7,6 +7,9 @@ import User from "../../typeorm/entities/User";
 import CuturalEventsController from "./cultural-events.controller";
 import CuturalEventsService from "./cultural-events.service";
 import LikeCulturalEventService from "./like-cultural-events.service";
+import ensureAutheticated from "../auth/ensure-autheticated.middleware";
+import canPerform from "../permission/can-perform.middleware";
+import { PermissionEnum } from "../../constants/permission";
 
 const culturalEventsRouter = Router();
 const userRepository = AppDataSource.getRepository(User);
@@ -28,17 +31,26 @@ const culturalEventsController = new CuturalEventsController(
   likeCulturalEventService
 );
 
-culturalEventsRouter.post("/", (req, res) =>
-  culturalEventsController.create(req, res)
+culturalEventsRouter.post(
+  "/",
+  ensureAutheticated,
+  canPerform(PermissionEnum.CULTURAL_EVENT_CREATE),
+  (req, res) => culturalEventsController.create(req, res)
 );
 culturalEventsRouter.get("/", (req, res) =>
   culturalEventsController.getAll(req, res)
 );
-culturalEventsRouter.post("/:culturalEventId/like", (req, res) =>
-  culturalEventsController.like(req, res)
+culturalEventsRouter.post(
+  "/:culturalEventId/like",
+  ensureAutheticated,
+  canPerform(PermissionEnum.LIKE_CULTURAL_EVENT),
+  (req, res) => culturalEventsController.like(req, res)
 );
-culturalEventsRouter.delete("/:culturalEventId/like", (req, res) =>
-  culturalEventsController.unlike(req, res)
+culturalEventsRouter.delete(
+  "/:culturalEventId/like",
+  ensureAutheticated,
+  canPerform(PermissionEnum.UNLIKE_CULTURAL_EVENT),
+  (req, res) => culturalEventsController.unlike(req, res)
 );
 
 export default culturalEventsRouter;

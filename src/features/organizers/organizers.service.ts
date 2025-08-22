@@ -2,6 +2,7 @@ import { Repository } from "typeorm";
 import Organizer from "../../typeorm/entities/Organizer";
 import User from "../../typeorm/entities/User";
 import { CreateOrganizersDTO } from "./dtos/create-organizer.dto";
+import { RoleEnum } from "../../constants/role";
 
 export default class OrganizersService {
   constructor(private organizersRepository: Repository<Organizer>) {}
@@ -11,17 +12,18 @@ export default class OrganizersService {
     user.name = createOrganizerDTO.name;
     user.authEmail = createOrganizerDTO.email;
     user.password = createOrganizerDTO.password;
+    user.role = RoleEnum.ORGANIZER;
 
     const organizer = new Organizer();
     organizer.displayName = createOrganizerDTO.displayName;
     organizer.description = createOrganizerDTO.description;
-    organizer.contacts = createOrganizerDTO.contacts ?? null
+    organizer.contacts = createOrganizerDTO.contacts ?? null;
     organizer.user = user;
 
     return this.organizersRepository.save(organizer);
   }
 
   getOrganizers() {
-    return this.organizersRepository.find()
+    return this.organizersRepository.find();
   }
 }
