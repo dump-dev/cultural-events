@@ -3,10 +3,10 @@ import User from "../../typeorm/entities/User";
 import CulturalEvent from "../../typeorm/entities/CulturalEvent";
 import LikeCulturalEvent from "../../typeorm/entities/LikeCulturalEvent";
 import { LikeCulturalEventDTO } from "./dtos/like-cultural-event.dto";
-import { UserNotFoundError } from "../../@types/errors/UserNotFoundError";
-import { CulturalEventNotFoundError } from "../../@types/errors/CulturalEventNotFoundError";
+import { UserNotFoundError } from "../../errors/UserNotFoundError";
+import { CulturalEventNotFoundError } from "../../errors/CulturalEventNotFoundError";
 import { UnlikeCulturalEventDTO } from "./dtos/unlike-cultural-event.dto";
-import LikeNotFoundError from "../../@types/errors/LikeNotFoundError";
+import LikeNotFoundError from "../../errors/LikeNotFoundError";
 
 export default class LikeCulturalEventService {
   constructor(

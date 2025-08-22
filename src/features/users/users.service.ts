@@ -2,7 +2,7 @@ import { Repository } from "typeorm";
 import User from "../../typeorm/entities/User";
 import CulturalEvent from "../../typeorm/entities/CulturalEvent";
 import { CreateUserDTO } from "./dtos/create-user.dto";
-import { UserNotFoundError } from "../../@types/errors/UserNotFoundError";
+import { UserNotFoundError } from "../../errors/UserNotFoundError";
 
 export default class UsersService {
   constructor(

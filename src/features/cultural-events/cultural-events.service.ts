@@ -3,7 +3,7 @@ import { CreateCuturalEventDTO } from "./dtos/create-cutural-event.dto";
 import Location from "../../typeorm/entities/Location";
 import Organizer from "../../typeorm/entities/Organizer";
 import CulturalEvent from "../../typeorm/entities/CulturalEvent";
-import { OrganizerNotFoundError } from "../../@types/errors/OrganizerNotFoundError";
+import { OrganizerNotFoundError } from "../../errors/OrganizerNotFoundError";
 
 export default class CuturalEventsService {
   constructor(

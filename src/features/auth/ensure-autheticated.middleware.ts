@@ -12,10 +12,14 @@ export default async function ensureAutheticated(
   }
 
   const [, accessToken] = req.headers.authorization.split(" ");
-
-  if (!AuthService.verifyAccessToken(accessToken)) {
+  const payload = AuthService.verifyAccessToken(accessToken);
+  if (!payload) {
     return res.sendStatus(StatusCodes.UNAUTHORIZED);
   }
-
+  
+  req.user = {
+    id: payload.iss,
+    role: payload.role,
+  };
   return next();
 }

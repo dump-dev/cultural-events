@@ -4,6 +4,7 @@ import { CredentialsDTO } from "./dtos/credentials.dto";
 import jwt from "jsonwebtoken";
 import { CreateAccessTokenDTO } from "./dtos/create-access-token.dto";
 import { InvalidCredentialsError } from "./types/InvalidCredentialsError";
+import { AccessPayload } from "./types/AccessPayload";
 
 export default class AuthService {
   constructor(private userRepository: Repository<User>) {}
@@ -35,12 +36,9 @@ export default class AuthService {
 
   static verifyAccessToken(token: string) {
     try {
-      return jwt.verify(token, "temporary_key");
+      return jwt.verify(token, "temporary_key") as AccessPayload;
     } catch {
       return false;
     }
   }
 }
-
-
-

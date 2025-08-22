@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { QueryFailedError } from "typeorm";
-import { OrganizerNotFoundError } from "../@types/errors/OrganizerNotFoundError";
-import { UserNotFoundError } from "../@types/errors/UserNotFoundError";
-import { CulturalEventNotFoundError } from "../@types/errors/CulturalEventNotFoundError";
-import LikeNotFoundError from "../@types/errors/LikeNotFoundError";
+import { OrganizerNotFoundError } from "../errors/OrganizerNotFoundError";
+import { UserNotFoundError } from "../errors/UserNotFoundError";
+import { CulturalEventNotFoundError } from "../errors/CulturalEventNotFoundError";
+import LikeNotFoundError from "../errors/LikeNotFoundError";
 import { InvalidCredentialsError } from "../features/auth/types/InvalidCredentialsError";
 
 export default function errorHandlerMiddleware(
