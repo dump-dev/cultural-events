@@ -5,7 +5,7 @@ import "reflect-metadata";
 import errorHandlerMiddleware from "./middlewares/error-handler.middleware";
 import router from "./router";
 import { connectDB } from "./typeorm/data-source";
-import seedRolesAndPermissions from "./typeorm/seed-roles-and-permissions";
+import seedRolesAndPermissions from "./typeorm/roles-and-permissions.seed";
 
 export default async function bootstrap() {
   await connectDB();
