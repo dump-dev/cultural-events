@@ -3,6 +3,8 @@ import UsersService from "./users.service";
 import { getLikesSchema } from "./schemas/get-likes.schema";
 import { StatusCodes } from "http-status-codes";
 import createUserSchema from "./schemas/create-user.schema";
+import { getByUserIdSchema } from "./schemas/get-by-user-id.schema";
+import { RoleEnum } from "../../constants/role";
 
 export default class UsersController {
   constructor(private usersService: UsersService) {}
@@ -20,6 +22,23 @@ export default class UsersController {
   async getAll(_: Request, res: Response) {
     const users = await this.usersService.getUsers();
     return res.send(users);
+  }
+
+  async getById(req: Request, res: Response) {
+    const parseResult = getByUserIdSchema.safeParse(req.params);
+    if (!parseResult.success) {
+      return res.status(StatusCodes.BAD_REQUEST).send(parseResult.error.issues);
+    }
+    const { userId } = parseResult.data;
+
+    const user = await this.usersService.getUserById(userId);
+    return res.send(user);
+  }
+
+  async getMe(req: Request, res: Response) {
+    const user = await this.usersService.getUserById(req.user.id);
+
+    return res.send(user);
   }
 
   async getLikes(req: Request, res: Response) {

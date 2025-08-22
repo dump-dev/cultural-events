@@ -29,6 +29,13 @@ export default class UsersService {
     return this.userRepository.find();
   }
 
+  async getUserById(userId: string) {
+    const user = await this.userRepository.findOneBy({id: userId})
+    if (!user) throw new UserNotFoundError(userId);
+    
+    return user
+  }
+
   async getLikes(userId: string) {
     const user = await this.userRepository.findOneBy({ id: userId });
     if (!user) throw new UserNotFoundError(userId);

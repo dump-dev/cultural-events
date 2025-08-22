@@ -7,6 +7,7 @@ import UsersService from "./users.service";
 import ensureAutheticated from "../auth/ensure-autheticated.middleware";
 import canPerform from "../permission/can-perform.middleware";
 import { PermissionEnum } from "../../constants/permission";
+import { RoleEnum } from "../../constants/role";
 
 const usersRouter = Router();
 const usersRepository = AppDataSource.getRepository(User);
@@ -21,6 +22,19 @@ usersRouter.get(
   canPerform(PermissionEnum.USER_LIST),
   (req, res) => usersController.getAll(req, res)
 );
+usersRouter.get(
+  "/me",
+  ensureAutheticated,
+  canPerform(PermissionEnum.USER_DETAILS),
+  (req, res) => usersController.getMe(req, res)
+);
+usersRouter.get(
+  "/:userId",
+  ensureAutheticated,
+  canPerform(PermissionEnum.USER_DETAILS, RoleEnum.ADMIN),
+  (req, res) => usersController.getById(req, res)
+);
+
 usersRouter.get(
   "/:userId/likes",
   ensureAutheticated,
