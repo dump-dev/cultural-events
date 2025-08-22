@@ -6,6 +6,7 @@ import { UserNotFoundError } from "../errors/UserNotFoundError";
 import { CulturalEventNotFoundError } from "../errors/CulturalEventNotFoundError";
 import LikeNotFoundError from "../errors/LikeNotFoundError";
 import { InvalidCredentialsError } from "../features/auth/types/InvalidCredentialsError";
+import UserAlreadyExistsError from "../errors/UserAlreadyExistsError";
 
 export default function errorHandlerMiddleware(
   err: any,
@@ -53,6 +54,12 @@ export default function errorHandlerMiddleware(
 
   if (err instanceof InvalidCredentialsError) {
     return res.status(StatusCodes.UNAUTHORIZED).send({
+      message: err.message,
+    });
+  }
+
+  if (err instanceof UserAlreadyExistsError) {
+    return res.status(StatusCodes.CONFLICT).send({
       message: err.message,
     });
   }

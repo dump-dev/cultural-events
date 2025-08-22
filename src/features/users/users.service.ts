@@ -4,6 +4,7 @@ import CulturalEvent from "../../typeorm/entities/CulturalEvent";
 import { CreateUserDTO } from "./dtos/create-user.dto";
 import { UserNotFoundError } from "../../errors/UserNotFoundError";
 import { RoleEnum } from "../../constants/role";
+import UserAlreadyExistsError from "../../errors/UserAlreadyExistsError";
 
 export default class UsersService {
   constructor(
@@ -12,6 +13,10 @@ export default class UsersService {
   ) {}
 
   async create(userDTO: CreateUserDTO) {
+    const hasUserWithEmail = await this.userRepository.findOneBy({
+      authEmail: userDTO.email,
+    });
+    if (hasUserWithEmail) throw new UserAlreadyExistsError();
     const user = new User();
     user.name = userDTO.name;
     user.authEmail = userDTO.email;

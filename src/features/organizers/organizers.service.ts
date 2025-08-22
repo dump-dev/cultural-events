@@ -3,21 +3,29 @@ import Organizer from "../../typeorm/entities/Organizer";
 import User from "../../typeorm/entities/User";
 import { CreateOrganizersDTO } from "./dtos/create-organizer.dto";
 import { RoleEnum } from "../../constants/role";
+import UserAlreadyExistsError from "../../errors/UserAlreadyExistsError";
 
 export default class OrganizersService {
   constructor(private organizersRepository: Repository<Organizer>) {}
 
-  async create(createOrganizerDTO: CreateOrganizersDTO) {
+  async create(organizerDTO: CreateOrganizersDTO) {
+    const hasUserWithEmail = await this.organizersRepository.findOneBy({
+      user: {
+        authEmail: organizerDTO.email
+      }
+    });
+    if (hasUserWithEmail) throw new UserAlreadyExistsError();
+
     const user = new User();
-    user.name = createOrganizerDTO.name;
-    user.authEmail = createOrganizerDTO.email;
-    user.password = createOrganizerDTO.password;
+    user.name = organizerDTO.name;
+    user.authEmail = organizerDTO.email;
+    user.password = organizerDTO.password;
     user.role = RoleEnum.ORGANIZER;
 
     const organizer = new Organizer();
-    organizer.displayName = createOrganizerDTO.displayName;
-    organizer.description = createOrganizerDTO.description;
-    organizer.contacts = createOrganizerDTO.contacts ?? null;
+    organizer.displayName = organizerDTO.displayName;
+    organizer.description = organizerDTO.description;
+    organizer.contacts = organizerDTO.contacts ?? null;
     organizer.user = user;
 
     return this.organizersRepository.save(organizer);
