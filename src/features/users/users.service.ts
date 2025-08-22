@@ -30,10 +30,14 @@ export default class UsersService {
   }
 
   async getUserById(userId: string) {
-    const user = await this.userRepository.findOneBy({id: userId})
+    const user = await this.userRepository.findOneBy({ id: userId });
     if (!user) throw new UserNotFoundError(userId);
-    
-    return user
+
+    return user;
+  }
+
+  async deleteUserById(userId: string) {
+    await this.userRepository.delete({ id: userId });
   }
 
   async getLikes(userId: string) {

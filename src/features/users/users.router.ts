@@ -1,13 +1,13 @@
 import { Router } from "express";
+import { PermissionEnum } from "../../constants/permission";
+import { RoleEnum } from "../../constants/role";
 import { AppDataSource } from "../../typeorm/data-source";
 import CulturalEvent from "../../typeorm/entities/CulturalEvent";
 import User from "../../typeorm/entities/User";
-import UsersController from "./users.controller";
-import UsersService from "./users.service";
 import ensureAutheticated from "../auth/ensure-autheticated.middleware";
 import canPerform from "../permission/can-perform.middleware";
-import { PermissionEnum } from "../../constants/permission";
-import { RoleEnum } from "../../constants/role";
+import UsersController from "./users.controller";
+import UsersService from "./users.service";
 
 const usersRouter = Router();
 const usersRepository = AppDataSource.getRepository(User);
@@ -28,11 +28,23 @@ usersRouter.get(
   canPerform(PermissionEnum.USER_DETAILS),
   (req, res) => usersController.getMe(req, res)
 );
+usersRouter.delete(
+  "/me",
+  ensureAutheticated,
+  canPerform(PermissionEnum.USER_DELETE),
+  (req, res) => usersController.deleteMe(req, res)
+);
 usersRouter.get(
   "/:userId",
   ensureAutheticated,
   canPerform(PermissionEnum.USER_DETAILS, RoleEnum.ADMIN),
   (req, res) => usersController.getById(req, res)
+);
+usersRouter.delete(
+  "/:userId",
+  ensureAutheticated,
+  canPerform(PermissionEnum.USER_DETAILS, RoleEnum.ADMIN),
+  (req, res) => usersController.deleteById(req, res)
 );
 
 usersRouter.get(
