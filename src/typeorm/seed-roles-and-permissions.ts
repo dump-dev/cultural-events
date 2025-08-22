@@ -7,7 +7,7 @@ import RolePermission from "./entities/RolePermission";
 
 const rolePermissions = {
   [RoleEnum.USER]: [
-    PermissionEnum.USER_LIST,
+    PermissionEnum.USER_DETAILS,
     PermissionEnum.USER_CREATE,
     PermissionEnum.USER_UPDATE,
     PermissionEnum.USER_DELETE,
@@ -34,6 +34,8 @@ const rolePermissions = {
 
   [RoleEnum.ADMIN]: [
     PermissionEnum.USER_LIST,
+    PermissionEnum.USER_DETAILS,
+
     PermissionEnum.USER_DELETE,
 
     PermissionEnum.ORGANIZER_LIST,
