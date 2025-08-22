@@ -7,39 +7,39 @@ import RolePermission from "./entities/RolePermission";
 
 const rolePermissions = {
   [RoleEnum.USER]: [
-    PermissionEnum.USER_READ,
+    PermissionEnum.USER_LIST,
     PermissionEnum.USER_CREATE,
     PermissionEnum.USER_UPDATE,
     PermissionEnum.USER_DELETE,
 
-    PermissionEnum.LIKE_READ,
+    PermissionEnum.LIKE_DETAILS,
     PermissionEnum.LIKE_CULTURAL_EVENT,
     PermissionEnum.UNLIKE_CULTURAL_EVENT,
 
-    PermissionEnum.ORGANIZER_READ,
-    PermissionEnum.CULTURAL_EVENT_READ,
+    PermissionEnum.ORGANIZER_LIST,
+    PermissionEnum.CULTURAL_EVENT_LIST,
   ],
 
   [RoleEnum.ORGANIZER]: [
-    PermissionEnum.ORGANIZER_READ,
+    PermissionEnum.ORGANIZER_LIST,
     PermissionEnum.ORGANIZER_CREATE,
     PermissionEnum.ORGANIZER_UPDATE,
     PermissionEnum.ORGANIZER_DELETE,
 
-    PermissionEnum.CULTURAL_EVENT_READ,
+    PermissionEnum.CULTURAL_EVENT_LIST,
     PermissionEnum.CULTURAL_EVENT_CREATE,
     PermissionEnum.CULTURAL_EVENT_UPDATE,
     PermissionEnum.CULTURAL_EVENT_DELETE,
   ],
 
   [RoleEnum.ADMIN]: [
-    PermissionEnum.USER_READ,
+    PermissionEnum.USER_LIST,
     PermissionEnum.USER_DELETE,
 
-    PermissionEnum.ORGANIZER_READ,
+    PermissionEnum.ORGANIZER_LIST,
     PermissionEnum.ORGANIZER_DELETE,
 
-    PermissionEnum.CULTURAL_EVENT_READ,
+    PermissionEnum.CULTURAL_EVENT_LIST,
     PermissionEnum.CULTURAL_EVENT_DELETE,
   ],
 };
