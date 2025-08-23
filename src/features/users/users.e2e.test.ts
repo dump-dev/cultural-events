@@ -33,6 +33,23 @@ describe("Router /users", () => {
         expect(response.body.role).toBe(RoleEnum.USER);
         expect(response.body).not.toHaveProperty("password");
       });
+
+      test("should return 409 when email is already registered", async () => {
+        const requestBody = {
+          name: "John Doe",
+          email: "johndoe@test.com",
+          password: "super secure",
+        };
+        const testAgent = request(app);
+        await testAgent.post("/users").send(requestBody);
+        const response = await testAgent.post("/users").send({
+          ...requestBody,
+          name: "Guest",
+          password: "Another password",
+        });
+
+        expect(response.statusCode).toBe(StatusCodes.CONFLICT);
+      });
     });
     describe("when given invalid data", () => {
       test("should return 400 and validation error", async () => {
@@ -69,8 +86,8 @@ describe("Router /users", () => {
 
         for (let requestBody of invalidRequestsBody) {
           const response = await request(app).post("/users").send(requestBody);
-          expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST)
-          expect(response.body).toBeInstanceOf(Array)
+          expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
+          expect(response.body).toBeInstanceOf(Array);
         }
       });
     });
