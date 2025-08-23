@@ -55,5 +55,43 @@ describe("Router /auth", () => {
         });
       });
     });
+
+    describe("when user sends invalid credentials", () => {
+      test("should return 400 with list of errors", async () => {
+        const testAgent = request(app);
+        const user = {
+          name: "John Doe",
+          email: "johndoe@test.com",
+          password: "super secure password",
+        };
+        await registerUser(testAgent, user);
+        const invalidCredetials = [
+          {},
+          {
+            email: "",
+          },
+          {
+            password: "",
+          },
+          {
+            email: "test@",
+            password: "test",
+          },
+          {
+            email: "test@tes.com",
+            password: "",
+          },
+        ];
+
+        for (let credentials of invalidCredetials) {
+          const response = await loginUser(
+            testAgent,
+            credentials as { email: string; password: string }
+          );
+          expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
+          expect(response.body).toBeInstanceOf(Array);
+        }
+      });
+    });
   });
 });
