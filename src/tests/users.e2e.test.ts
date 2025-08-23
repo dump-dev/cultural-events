@@ -1,10 +1,11 @@
 import { Express } from "express";
-import bootstrap from "../../bootstrap";
-import { closeConnectionRedis } from "../../redis-client/client";
-import { closeConnectionDB } from "../../typeorm/data-source";
+import bootstrap from "../bootstrap";
+import { closeConnectionRedis } from "../redis-client/client";
+import { closeConnectionDB } from "../typeorm/data-source";
 import request from "supertest";
 import { StatusCodes } from "http-status-codes";
-import { RoleEnum } from "../../constants/role";
+import { RoleEnum } from "../constants/role";
+import createAndLoginUser from "./utils/create-and-login-user";
 
 jest.spyOn(console, "log").mockImplementation(() => {});
 
@@ -89,6 +90,30 @@ describe("Router /users", () => {
           expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
           expect(response.body).toBeInstanceOf(Array);
         }
+      });
+    });
+  });
+
+  describe("GET /me", () => {
+    describe("when user is authenticated", () => {
+      test("should return status 200 and user data", async () => {
+        const testAgent = request(app);
+
+        const user = {
+          name: "John Doe",
+          email: "johndoe@test.com",
+          password: "super secure password",
+        };
+
+        const authResponse = await createAndLoginUser(testAgent, user);
+        const { accessToken } = authResponse.body;
+
+        const response = await testAgent
+          .get("/users/me")
+          .set("Authorization", `Bearer ${accessToken}`);
+        expect(response.statusCode).toBe(StatusCodes.OK);
+        expect(response.body.name).toBe(user.name);
+        expect(response.body.authEmail).toBe(user.email);
       });
     });
   });
