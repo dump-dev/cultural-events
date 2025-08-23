@@ -5,6 +5,7 @@ import { deleteByUserIdSchema } from "./schemas/delete-by-user-id.schema";
 import { getByUserIdSchema } from "./schemas/get-by-user-id.schema";
 import { getLikesSchema } from "./schemas/get-likes.schema";
 import UsersService from "./users.service";
+import { BlacklistService } from "../auth/blacklist.service";
 
 export default class UsersController {
   constructor(private usersService: UsersService) {}
@@ -43,7 +44,8 @@ export default class UsersController {
 
   async deleteMe(req: Request, res: Response) {
     await this.usersService.deleteUserById(req.user.id);
-    // TODO: invalidate the access token
+    const [, accessToken] = req.headers.authorization!.split(" ");
+    BlacklistService.addAccessToken(accessToken);
     return res.sendStatus(StatusCodes.NO_CONTENT);
   }
 
