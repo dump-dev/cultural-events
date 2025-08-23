@@ -6,6 +6,8 @@ import { getByUserIdSchema } from "./schemas/get-by-user-id.schema";
 import { getLikesSchema } from "./schemas/get-likes.schema";
 import UsersService from "./users.service";
 import { BlacklistService } from "../auth/blacklist.service";
+import { UserDTO } from "./dtos/user.dto";
+import UserMapper from "./user.mapper";
 
 export default class UsersController {
   constructor(private usersService: UsersService) {}
@@ -17,12 +19,12 @@ export default class UsersController {
     }
     const userParsed = parseResult.data;
     const user = await this.usersService.create(userParsed);
-    return res.status(StatusCodes.CREATED).send(user);
+    return res.status(StatusCodes.CREATED).send(UserMapper.toDTO(user));
   }
 
   async getAll(_: Request, res: Response) {
     const users = await this.usersService.getUsers();
-    return res.send(users);
+    return res.send(users.map(UserMapper.toDTO));
   }
 
   async getById(req: Request, res: Response) {
@@ -33,13 +35,13 @@ export default class UsersController {
     const { userId } = parseResult.data;
 
     const user = await this.usersService.getUserById(userId);
-    return res.send(user);
+    return res.send(UserMapper.toDTO(user));
   }
 
   async getMe(req: Request, res: Response) {
     const user = await this.usersService.getUserById(req.user.id);
 
-    return res.send(user);
+    return res.send(UserMapper.toDTO(user));
   }
 
   async deleteMe(req: Request, res: Response) {
