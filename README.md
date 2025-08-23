@@ -14,3 +14,5 @@ Você foi contratado para criar uma API que permita listar, cadastrar e gerencia
 * Express
 * TypeORM
 * SQLite
+* Jest
+* Redis
