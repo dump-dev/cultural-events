@@ -5,7 +5,7 @@ import { closeConnectionDB } from "../typeorm/data-source";
 import request from "supertest";
 import { StatusCodes } from "http-status-codes";
 import { RoleEnum } from "../constants/role";
-import createAndLoginUser from "./utils/create-and-login-user";
+import { createAndLoginUser } from "./utils/user-helper";
 
 jest.spyOn(console, "log").mockImplementation(() => {});
 
