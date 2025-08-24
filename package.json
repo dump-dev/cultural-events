@@ -5,6 +5,15 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsnd --respawn ./src/server.ts",
+    "build": "tsc",
+    "start": "node ./dist/server.js",
+    "build:start": "npm run build && npm run start",
+    "typeorm": "typeorm-ts-node-commonjs -d ./src/typeorm/data-source.ts",
+    "migration:generate": "npm run typeorm -- migration:generate",
+    "migration:create": "npm run typeorm -- migration:create",
+    "migration:run": "npm run typeorm -- migration:run",
+    "migration:revert": "npm run typeorm -- migration:revert",
+    "migration:show": "npm run typeorm -- migration:show",
     "test": "jest"
   },
   "keywords": [],
