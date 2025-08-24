@@ -17,5 +17,6 @@ export const loginUser = async (
 
 export async function createAndLoginUser(testAgent: TestAgent, user: User) {
   await registerUser(testAgent, user);
-  return loginUser(testAgent, user);
+  const response = await loginUser(testAgent, user);
+  return response.body;
 }

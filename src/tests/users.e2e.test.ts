@@ -105,8 +105,7 @@ describe("Router /users", () => {
           password: "super secure password",
         };
 
-        const authResponse = await createAndLoginUser(testAgent, user);
-        const { accessToken } = authResponse.body;
+        const { accessToken } = await createAndLoginUser(testAgent, user);
 
         const response = await testAgent
           .get("/users/me")
