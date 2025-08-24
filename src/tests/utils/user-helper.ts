@@ -1,5 +1,4 @@
 import TestAgent from "supertest/lib/agent";
-import request from "supertest/lib/agent";
 
 type User = {
   name: string;
