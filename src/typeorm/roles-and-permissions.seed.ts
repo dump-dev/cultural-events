@@ -1,13 +1,13 @@
 import { Role } from "../@types/Role";
 import { PermissionEnum } from "../constants/permission";
 
-import { AppDataSource } from "./data-source";
+import dataSource from "./data-source";
 import Permission from "./entities/Permission";
 import RolePermission from "./entities/RolePermission";
 import rolePermissions from "./role-permissions";
 
 async function insertPermissions() {
-  const permissionRepository = AppDataSource.getRepository(Permission);
+  const permissionRepository = dataSource.getRepository(Permission);
   const permissionNames = Object.values(PermissionEnum);
 
   for (let name of permissionNames) {
@@ -16,7 +16,7 @@ async function insertPermissions() {
 }
 
 async function insertRolePermissions() {
-  const rolePermissionRepository = AppDataSource.getRepository(RolePermission);
+  const rolePermissionRepository = dataSource.getRepository(RolePermission);
   const roleAndPermissions = Object.entries(rolePermissions);
 
   for (let [role, permissions] of roleAndPermissions) {

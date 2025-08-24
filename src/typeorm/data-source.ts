@@ -7,6 +7,7 @@ import Organizer from "./entities/Organizer";
 import Permission from "./entities/Permission";
 import RolePermission from "./entities/RolePermission";
 import User from "./entities/User";
+import 'dotenv/config'
 
 const entities: Required<DataSourceOptions["entities"]> = [
   User,
@@ -15,7 +16,7 @@ const entities: Required<DataSourceOptions["entities"]> = [
   CulturalEvent,
   LikeCulturalEvent,
   Permission,
-  RolePermission
+  RolePermission,
 ];
 
 const developmentOptions: DataSourceOptions = {
@@ -29,21 +30,24 @@ const productionsOptions: DataSourceOptions = {
   type: "sqlite",
   database: path.resolve(__dirname, "database.sql"),
   entities: entities,
-  synchronize: true
+  synchronize: false,
+  migrations: [path.resolve(__dirname, "migrations/*.{ts,js}")],
 };
 
-export const AppDataSource = new DataSource(
+const dataSource = new DataSource(
   process.env.NODE_ENV === "production"
     ? productionsOptions
     : developmentOptions
 );
 
 export async function connectDB() {
-  await AppDataSource.initialize();
+  await dataSource.initialize();
   console.log("✅ initialized database connection");
 }
 
 export async function closeConnectionDB() {
-  await AppDataSource.destroy();
+  await dataSource.destroy();
   console.log("📴 closed database connection");
 }
+
+export default dataSource;

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { PermissionEnum } from "../../constants/permission";
 import { RoleEnum } from "../../constants/role";
-import { AppDataSource } from "../../typeorm/data-source";
+import dataSource from "../../typeorm/data-source";
 import CulturalEvent from "../../typeorm/entities/CulturalEvent";
 import User from "../../typeorm/entities/User";
 import ensureAutheticated from "../auth/ensure-autheticated.middleware";
@@ -10,8 +10,8 @@ import UsersController from "./users.controller";
 import UsersService from "./users.service";
 
 const usersRouter = Router();
-const usersRepository = AppDataSource.getRepository(User);
-const culturalEventRepository = AppDataSource.getRepository(CulturalEvent);
+const usersRepository = dataSource.getRepository(User);
+const culturalEventRepository = dataSource.getRepository(CulturalEvent);
 
 const usersService = new UsersService(usersRepository, culturalEventRepository);
 const usersController = new UsersController(usersService);

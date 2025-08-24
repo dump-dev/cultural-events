@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AppDataSource } from "../../typeorm/data-source";
+import dataSource from "../../typeorm/data-source";
 import CulturalEvent from "../../typeorm/entities/CulturalEvent";
 import LikeCulturalEvent from "../../typeorm/entities/LikeCulturalEvent";
 import Organizer from "../../typeorm/entities/Organizer";
@@ -12,11 +12,11 @@ import canPerform from "../permission/can-perform.middleware";
 import { PermissionEnum } from "../../constants/permission";
 
 const culturalEventsRouter = Router();
-const userRepository = AppDataSource.getRepository(User);
-const organizerRepository = AppDataSource.getRepository(Organizer);
-const culturalEventsRepository = AppDataSource.getRepository(CulturalEvent);
+const userRepository = dataSource.getRepository(User);
+const organizerRepository = dataSource.getRepository(Organizer);
+const culturalEventsRepository = dataSource.getRepository(CulturalEvent);
 const likeCulturalEventRepository =
-  AppDataSource.getRepository(LikeCulturalEvent);
+  dataSource.getRepository(LikeCulturalEvent);
 const culturalEventsService = new CuturalEventsService(
   culturalEventsRepository,
   organizerRepository

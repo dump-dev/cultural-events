@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { AppDataSource } from "../../typeorm/data-source";
+import dataSource from "../../typeorm/data-source";
 import OrganizersService from "./organizers.service";
 import OrganizersController from "./organizers.controller";
 import Organizer from "../../typeorm/entities/Organizer";
 
 const organizersRouter = Router();
 
-const organizersRepository = AppDataSource.getRepository(Organizer);
+const organizersRepository = dataSource.getRepository(Organizer);
 const organizersService = new OrganizersService(organizersRepository);
 const organizerContoller = new OrganizersController(organizersService);
 organizersRouter.post("/", (req, res) => organizerContoller.create(req, res));

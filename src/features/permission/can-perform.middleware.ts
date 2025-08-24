@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { Permission } from "../../@types/Permission";
 import { Role } from "../../@types/Role";
-import { AppDataSource } from "../../typeorm/data-source";
+import dataSource from "../../typeorm/data-source";
 import RolePermission from "../../typeorm/entities/RolePermission";
 
 export default function canPerform(
@@ -11,7 +11,7 @@ export default function canPerform(
 ) {
   const verifyByRole = async (role: Role) => {
     const rolePermissionRepository =
-      AppDataSource.getRepository(RolePermission);
+      dataSource.getRepository(RolePermission);
 
     const rolePermissions = await rolePermissionRepository.find({
       where: {
