@@ -94,7 +94,7 @@ describe("Router /users", () => {
     });
   });
 
-  describe("GET /me", () => {
+  describe("GET /users/me", () => {
     describe("when user is authenticated", () => {
       test("should return status 200 and user data", async () => {
         const testAgent = request(app);
@@ -113,6 +113,69 @@ describe("Router /users", () => {
         expect(response.statusCode).toBe(StatusCodes.OK);
         expect(response.body.name).toBe(user.name);
         expect(response.body.authEmail).toBe(user.email);
+      });
+    });
+  });
+
+  describe("DELETE /users/me", () => {
+    describe("when user is authenticated", () => {
+      test("should return 204", async () => {
+        const testAgent = request(app);
+        const user = {
+          name: "John Doe",
+          email: "johndoe@test.com",
+          password: "super secure password",
+        };
+        const { accessToken } = await createAndLoginUser(testAgent, user);
+        const response = await testAgent
+          .delete("/users/me")
+          .set("Authorization", `Bearer ${accessToken}`);
+        expect(response.statusCode).toBe(StatusCodes.NO_CONTENT);
+      });
+
+      test("should return 401 when user tries to delete again", async () => {
+        const testAgent = request(app);
+        const user = {
+          name: "John Doe",
+          email: "johndoe@test.com",
+          password: "super secure password",
+        };
+        const { accessToken } = await createAndLoginUser(testAgent, user);
+
+        await testAgent
+          .delete("/users/me")
+          .set("Authorization", `Bearer ${accessToken}`);
+
+        const response = await testAgent
+          .delete("/users/me")
+          .set("Authorization", `Bearer ${accessToken}`);
+        expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED);
+      });
+    });
+
+    describe("when user is not authenticated", () => {
+      describe("should return 401", () => {
+        test("when user not send the accessToken on Authorization header", async () => {
+          const testAgent = request(app);
+          const response = await testAgent.delete("/users/me");
+          expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED);
+        });
+
+        test("when user any token invalid or expired", async () => {
+          const testAgent = request(app);
+          const invalidTokens = [
+            "",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30",
+            "yeadf.aefaf.ae33",
+          ];
+
+          for (let accessToken of invalidTokens) {
+            const response = await testAgent
+              .delete("/users/me")
+              .set("Authorization", `Bearer ${accessToken}`);
+            expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED);
+          }
+        });
       });
     });
   });
