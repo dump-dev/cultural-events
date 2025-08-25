@@ -13,11 +13,11 @@ export default class OrganizersController {
     }
     const organizerParsed = parseResult.data;
     const organizer = await this.organizersService.create(organizerParsed);
-    return res.send(organizer);
+    return res.status(StatusCodes.CREATED).send(organizer);
   }
 
   async getAll(req: Request, res: Response) {
     const organizers = await this.organizersService.getOrganizers();
-    return res.status(StatusCodes.CREATED).send(organizers);
+    return res.send(organizers);
   }
 }
