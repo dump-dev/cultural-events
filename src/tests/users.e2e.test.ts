@@ -6,6 +6,7 @@ import request from "supertest";
 import { StatusCodes } from "http-status-codes";
 import { RoleEnum } from "../constants/role";
 import { createAndLoginUser } from "./utils/user-helper";
+import { loginAdminAndReturnBody } from "./utils/admin-help";
 
 jest.spyOn(console, "log").mockImplementation(() => {});
 
@@ -91,6 +92,39 @@ describe("Router /users", () => {
           expect(response.body).toBeInstanceOf(Array);
         }
       });
+    });
+  });
+
+  describe("GET /users", () => {
+    test("should return 200 with a list of users when an authenticated user has permission", async () => {
+      const testAgent = request(app);
+      const { accessToken } = await loginAdminAndReturnBody(testAgent);
+      const response = await testAgent
+        .get("/users")
+        .set("Authorization", `Bearer ${accessToken}`);
+      expect(response.statusCode).toBe(StatusCodes.OK);
+      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body).toHaveLength(1);
+    });
+
+    test("should return 403 when an authenticated user does not have permission", async () => {
+      const testAgent = request(app);
+      const user = {
+        name: "John Doe",
+        email: "john@test.com",
+        password: "super secure password",
+      };
+      const { accessToken } = await createAndLoginUser(testAgent, user);
+      const response = await testAgent
+        .get("/users")
+        .set("Authorization", `Bearer ${accessToken}`);
+      expect(response.statusCode).toBe(StatusCodes.FORBIDDEN);
+    });
+
+    test("should return 401 when user is not authenticated", async () => {
+      const testAgent = request(app);
+      const response = await testAgent.get("/users");
+      expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED);
     });
   });
 
