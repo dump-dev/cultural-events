@@ -7,13 +7,16 @@ import { StatusCodes } from "http-status-codes";
 import { RoleEnum } from "../constants/role";
 import { createAndLoginUser, registerUser } from "./utils/user-helper";
 import { loginAdminAndReturnBody } from "./utils/admin-help";
+import TestAgent from "supertest/lib/agent";
 
 jest.spyOn(console, "log").mockImplementation(() => {});
 
 describe("Router /users", () => {
   let app: Express;
+  let testAgent: TestAgent;
   beforeEach(async () => {
     app = await bootstrap();
+    testAgent = request(app);
   });
 
   afterEach(async () => {
@@ -28,7 +31,7 @@ describe("Router /users", () => {
           email: "johndoe@test.com",
           password: "super secure",
         };
-        const response = await request(app).post("/users").send(requestBody);
+        const response = await testAgent.post("/users").send(requestBody);
         expect(response.statusCode).toBe(StatusCodes.CREATED);
         expect(response.body.name).toBe(requestBody.name);
         expect(response.body.authEmail).toBe(requestBody.email);
@@ -42,7 +45,6 @@ describe("Router /users", () => {
           email: "johndoe@test.com",
           password: "super secure",
         };
-        const testAgent = request(app);
         await testAgent.post("/users").send(requestBody);
         const response = await testAgent.post("/users").send({
           ...requestBody,
@@ -97,7 +99,6 @@ describe("Router /users", () => {
 
   describe("GET /users", () => {
     test("should return 200 with a list of users when an authenticated user has permission", async () => {
-      const testAgent = request(app);
       const { accessToken } = await loginAdminAndReturnBody(testAgent);
       const response = await testAgent
         .get("/users")
@@ -108,7 +109,6 @@ describe("Router /users", () => {
     });
 
     test("should return 403 when an authenticated user does not have permission", async () => {
-      const testAgent = request(app);
       const user = {
         name: "John Doe",
         email: "john@test.com",
@@ -122,7 +122,6 @@ describe("Router /users", () => {
     });
 
     test("should return 401 when user is not authenticated", async () => {
-      const testAgent = request(app);
       const response = await testAgent.get("/users");
       expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED);
     });
@@ -131,8 +130,6 @@ describe("Router /users", () => {
   describe("GET /users/me", () => {
     describe("when user is authenticated", () => {
       test("should return status 200 and user data", async () => {
-        const testAgent = request(app);
-
         const user = {
           name: "John Doe",
           email: "johndoe@test.com",
@@ -154,7 +151,6 @@ describe("Router /users", () => {
   describe("GET /users/:userId", () => {
     describe("when the authenticated user is an admin", () => {
       test("should return 200 with user data when user exists", async () => {
-        const testAgent = request(app);
         const user = {
           name: "John Doe",
           email: "johndoe@test.com",
@@ -174,7 +170,6 @@ describe("Router /users", () => {
       });
 
       test("should return 404 when user not exists", async () => {
-        const testAgent = request(app);
         const { accessToken } = await loginAdminAndReturnBody(testAgent);
         const response = await testAgent
           .get("/users/1e2ddc87-73be-402f-80f6-81123d39d730")
@@ -185,7 +180,6 @@ describe("Router /users", () => {
 
     describe("when the authenticated is not an admin", () => {
       test("should return 403", async () => {
-        const testAgent = request(app);
         const anotherUser = {
           name: "Another",
           email: "another@test.com",
@@ -211,7 +205,6 @@ describe("Router /users", () => {
   describe("DELETE /users/me", () => {
     describe("when user is authenticated", () => {
       test("should return 204", async () => {
-        const testAgent = request(app);
         const user = {
           name: "John Doe",
           email: "johndoe@test.com",
@@ -225,7 +218,6 @@ describe("Router /users", () => {
       });
 
       test("should return 401 when user tries to delete again", async () => {
-        const testAgent = request(app);
         const user = {
           name: "John Doe",
           email: "johndoe@test.com",
@@ -247,13 +239,11 @@ describe("Router /users", () => {
     describe("when user is not authenticated", () => {
       describe("should return 401", () => {
         test("when user not send the accessToken on Authorization header", async () => {
-          const testAgent = request(app);
           const response = await testAgent.delete("/users/me");
           expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED);
         });
 
         test("when user any token invalid or expired", async () => {
-          const testAgent = request(app);
           const invalidTokens = [
             "",
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30",

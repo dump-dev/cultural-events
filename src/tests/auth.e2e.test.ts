@@ -5,13 +5,16 @@ import bootstrap from "../bootstrap";
 import { closeConnectionDB } from "../typeorm/data-source";
 import { closeConnectionRedis } from "../redis-client/client";
 import { loginUser, registerUser } from "./utils/user-helper";
+import TestAgent from "supertest/lib/agent";
 
 jest.spyOn(console, "log").mockImplementation(() => {});
 
 describe("Router /auth", () => {
   let app: Express;
+  let testAgent: TestAgent;
   beforeEach(async () => {
     app = await bootstrap();
+    testAgent = request(app);
   });
 
   afterEach(async () => {
@@ -22,7 +25,6 @@ describe("Router /auth", () => {
     describe("when user sends valid credentials", () => {
       describe("and credentials match", () => {
         test("should return 200 and an accessToken", async () => {
-          const testAgent = request(app);
           const user = {
             name: "John Doe",
             email: "johndoe@test.com",
@@ -38,7 +40,6 @@ describe("Router /auth", () => {
 
       describe("and credentials do not match", () => {
         test("should return 401 and have error message", async () => {
-          const testAgent = request(app);
           const user = {
             name: "John Doe",
             email: "johndoe@test.com",
@@ -58,7 +59,6 @@ describe("Router /auth", () => {
 
     describe("when user sends invalid credentials", () => {
       test("should return 400 with list of errors", async () => {
-        const testAgent = request(app);
         const user = {
           name: "John Doe",
           email: "johndoe@test.com",
