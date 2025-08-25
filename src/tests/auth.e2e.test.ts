@@ -83,7 +83,7 @@ describe("Router /auth", () => {
           },
         ];
 
-        for (let credentials of invalidCredetials) {
+        for (const credentials of invalidCredetials) {
           const response = await loginUser(
             testAgent,
             credentials as { email: string; password: string }

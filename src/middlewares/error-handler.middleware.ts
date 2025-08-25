@@ -9,7 +9,7 @@ import { InvalidCredentialsError } from "../features/auth/types/InvalidCredentia
 import UserAlreadyExistsError from "../errors/UserAlreadyExistsError";
 
 export default function errorHandlerMiddleware(
-  err: any,
+  err: unknown,
   req: Request,
   res: Response,
   next: NextFunction

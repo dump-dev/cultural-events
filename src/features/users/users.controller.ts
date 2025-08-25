@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import { BlacklistService } from "../auth/blacklist.service";
 import createUserSchema from "./schemas/create-user.schema";
 import { deleteByUserIdSchema } from "./schemas/delete-by-user-id.schema";
 import { getByUserIdSchema } from "./schemas/get-by-user-id.schema";
 import { getLikesSchema } from "./schemas/get-likes.schema";
-import UsersService from "./users.service";
-import { BlacklistService } from "../auth/blacklist.service";
-import { UserDTO } from "./dtos/user.dto";
 import UserMapper from "./user.mapper";
+import UsersService from "./users.service";
 
 export default class UsersController {
   constructor(private usersService: UsersService) {}

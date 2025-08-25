@@ -3,7 +3,7 @@ import { closeConnectionRedis } from "./redis-client/client";
 import { closeConnectionDB } from "./typeorm/data-source";
 
 const showUpMessage = () => console.log("🚀 Server is up");
-const handleError = async (err: any) => {
+const handleError = async (err: unknown) => {
   console.log("Something goes wrong");
   console.error(err);
   handleExit();

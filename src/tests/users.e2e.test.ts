@@ -86,7 +86,7 @@ describe("Router /users", () => {
           },
         ];
 
-        for (let requestBody of invalidRequestsBody) {
+        for (const requestBody of invalidRequestsBody) {
           const response = await request(app).post("/users").send(requestBody);
           expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
           expect(response.body).toBeInstanceOf(Array);
@@ -203,7 +203,7 @@ describe("Router /users", () => {
             "yeadf.aefaf.ae33",
           ];
 
-          for (let accessToken of invalidTokens) {
+          for (const accessToken of invalidTokens) {
             const response = await testAgent
               .delete("/users/me")
               .set("Authorization", `Bearer ${accessToken}`);
