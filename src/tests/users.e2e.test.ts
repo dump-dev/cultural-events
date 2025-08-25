@@ -5,7 +5,7 @@ import { closeConnectionDB } from "../typeorm/data-source";
 import request from "supertest";
 import { StatusCodes } from "http-status-codes";
 import { RoleEnum } from "../constants/role";
-import { createAndLoginUser } from "./utils/user-helper";
+import { createAndLoginUser, registerUser } from "./utils/user-helper";
 import { loginAdminAndReturnBody } from "./utils/admin-help";
 
 jest.spyOn(console, "log").mockImplementation(() => {});
@@ -147,6 +147,63 @@ describe("Router /users", () => {
         expect(response.statusCode).toBe(StatusCodes.OK);
         expect(response.body.name).toBe(user.name);
         expect(response.body.authEmail).toBe(user.email);
+      });
+    });
+  });
+
+  describe("GET /users/:userId", () => {
+    describe("when the authenticated user is an admin", () => {
+      test("should return 200 with user data when user exists", async () => {
+        const testAgent = request(app);
+        const user = {
+          name: "John Doe",
+          email: "johndoe@test.com",
+          password: "super secure password",
+        };
+        const registerResponse = await registerUser(testAgent, user);
+        const { id: userId } = registerResponse.body;
+        const { accessToken } = await loginAdminAndReturnBody(testAgent);
+        const response = await testAgent
+          .get(`/users/${userId}`)
+          .set("Authorization", `Bearer ${accessToken}`);
+        expect(response.statusCode).toBe(StatusCodes.OK);
+        expect(response.body.id).toBe(userId);
+        expect(response.body.name).toBe(user.name);
+        expect(response.body.authEmail).toBe(user.email);
+        expect(response.body).not.toHaveProperty("password");
+      });
+
+      test("should return 404 when user not exists", async () => {
+        const testAgent = request(app);
+        const { accessToken } = await loginAdminAndReturnBody(testAgent);
+        const response = await testAgent
+          .get("/users/1e2ddc87-73be-402f-80f6-81123d39d730")
+          .set("Authorization", `Bearer ${accessToken}`);
+        expect(response.statusCode).toBe(StatusCodes.NOT_FOUND);
+      });
+    });
+
+    describe("when the authenticated is not an admin", () => {
+      test("should return 403", async () => {
+        const testAgent = request(app);
+        const anotherUser = {
+          name: "Another",
+          email: "another@test.com",
+          password: "l4#31kfaj#FAfdf55JFKJA",
+        };
+        const registerResponse = await registerUser(testAgent, anotherUser);
+        const { id: userId } = registerResponse.body;
+
+        const user = {
+          name: "John Doe",
+          email: "john@test.com",
+          password: "super secure password",
+        };
+        const { accessToken } = await createAndLoginUser(testAgent, user);
+        const response = await testAgent
+          .get(`/users/${userId}`)
+          .set("Authorization", `Bearer ${accessToken}`);
+        expect(response.statusCode).toBe(StatusCodes.FORBIDDEN);
       });
     });
   });
