@@ -202,6 +202,57 @@ describe("Router /users", () => {
     });
   });
 
+  describe("DELETE /users/:userId", () => {
+    describe("when the authenticated user is an admin", () => {
+      test("should return 204 when user exists", async () => {
+        const user = {
+          name: "John Doe",
+          email: "john@test.com",
+          password: "super secure password",
+        };
+        const registerResponse = await registerUser(testAgent, user);
+        const { id: userId } = registerResponse.body;
+        const { accessToken } = await loginAdminAndReturnBody(testAgent);
+        const response = await testAgent
+          .delete(`/users/${userId}`)
+          .set("Authorization", `Bearer ${accessToken}`);
+        expect(response.statusCode).toBe(StatusCodes.NO_CONTENT);
+      });
+
+      test("should return 404 when user not exists", async () => {
+        const user = {
+          name: "John Doe",
+          email: "john@test.com",
+          password: "super secure password",
+        };
+        const registerResponse = await registerUser(testAgent, user);
+        const { id } = registerResponse.body;
+        const { accessToken } = await loginAdminAndReturnBody(testAgent);
+        const userIds = [id, "c2ef6b61-4404-4ce9-bbda-271f4a0bbc63"];
+        for (const userId of userIds) {
+          const response = await testAgent
+            .delete(`/users/${userId}`)
+            .set("Authorization", `Bearer ${accessToken}`);
+          expect(response.statusCode).toBe(StatusCodes.NO_CONTENT);
+        }
+      });
+    });
+
+    test("shoul return 403 when the authenticated user is not an admin", async () => {
+      const user = {
+        name: "John Doe",
+        email: "john@test.com",
+        password: "super secure password",
+      };
+
+      const { accessToken } = await createAndLoginUser(testAgent, user);
+      const response = await testAgent
+        .delete(`/users/"c2ef6b61-4404-4ce9-bbda-271f4a0bbc63"`)
+        .set("Authorization", `Bearer ${accessToken}`);
+      expect(response.statusCode).toBe(StatusCodes.FORBIDDEN);
+    });
+  });
+
   describe("DELETE /users/me", () => {
     describe("when user is authenticated", () => {
       test("should return 204", async () => {
