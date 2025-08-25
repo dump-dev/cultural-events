@@ -16,12 +16,14 @@
     "migration:show": "npm run typeorm -- migration:show",
     "seed:create": "typeorm-extension seed:create",
     "seed:run": "typeorm-extension seed:run -d ./src/typeorm/data-source.ts",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint ./src"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@eslint/js": "^9.34.0",
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
@@ -29,11 +31,15 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.3.0",
     "@types/supertest": "^6.0.3",
+    "eslint": "^9.34.0",
+    "globals": "^16.3.0",
     "jest": "^30.0.5",
+    "jiti": "^2.5.1",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.1",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.40.0"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
