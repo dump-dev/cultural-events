@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import OrganizersService from "./organizers.service";
 import { StatusCodes } from "http-status-codes";
 import { createOrganizerSchema } from "./schemas/create-organizer.schema";
+import OrganizerMapper from "./organizer.mapper";
 
 export default class OrganizersController {
   constructor(private organizersService: OrganizersService) {}
@@ -13,7 +14,9 @@ export default class OrganizersController {
     }
     const organizerParsed = parseResult.data;
     const organizer = await this.organizersService.create(organizerParsed);
-    return res.status(StatusCodes.CREATED).send(organizer);
+    return res
+      .status(StatusCodes.CREATED)
+      .send(OrganizerMapper.toDetailedDTO(organizer));
   }
 
   async getAll(req: Request, res: Response) {

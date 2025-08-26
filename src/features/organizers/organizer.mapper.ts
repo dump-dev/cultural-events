@@ -1,0 +1,17 @@
+import Organizer from "../../typeorm/entities/Organizer";
+import UserMapper from "../users/user.mapper";
+import { OrganizerDetailedDTO } from "./dtos/organizer-detailed.dto";
+
+export default class OrganizerMapper {
+  static toDetailedDTO(organizer: Organizer): OrganizerDetailedDTO {
+    const { id, displayName, contacts, description, user } = organizer;
+
+    return {
+      id,
+      displayName,
+      description,
+      user: UserMapper.toDTO(user),
+      contacts: contacts ?? undefined,
+    };
+  }
+}
