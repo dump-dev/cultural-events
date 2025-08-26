@@ -7,10 +7,10 @@ import { roles } from "../../constants/role";
 
 @Entity()
 export default class RolePermission {
-  @PrimaryColumn({ enum: roles })
+  @PrimaryColumn({ type: "text", enum: roles })
   role_name: Role;
 
-  @PrimaryColumn({ enum: permissions })
+  @PrimaryColumn({ type: "text", enum: permissions })
   permission_name: Permission;
 
   @ManyToOne(() => PermissionEntity, { onDelete: "CASCADE" })

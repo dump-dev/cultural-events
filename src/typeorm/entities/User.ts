@@ -29,7 +29,7 @@ export default class User {
   @Column()
   password: string;
 
-  @Column({ enum: roles, default: RoleEnum.USER })
+  @Column({ type: "text", enum: roles, default: RoleEnum.USER })
   role: Role;
 
   @BeforeInsert()
