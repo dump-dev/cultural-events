@@ -73,6 +73,13 @@ describe("Router /organizers", () => {
           }
         }
       });
+
+      test('should return 409 when organizer already registered', async () => {
+        const organizer = makeFakeOrganizerData()
+        await testAgent.post('/organizers').send(organizer)
+        const response = await testAgent.post('/organizers').send(organizer) 
+        expect(response.statusCode).toBe(StatusCodes.CONFLICT)
+      })
     });
   });
 });
