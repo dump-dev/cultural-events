@@ -48,6 +48,7 @@ describe("Router /organizers", () => {
         const organizer = makeFakeOrganizerData(contacts);
 
         const response = await testAgent.post("/organizers").send(organizer);
+        expect(response.statusCode).toBe(StatusCodes.CREATED)
         expect(response.body.contacts.email).toBe(contacts.email);
         expect(response.body.contacts.website).toBe(contacts.website);
         expect(response.body.contacts.instagram).toBe(contacts.instagram);
@@ -64,6 +65,7 @@ describe("Router /organizers", () => {
         >) {
           const organizer = makeFakeOrganizerData({ [field]: contacts[field] });
           const response = await testAgent.post("/organizers").send(organizer);
+          expect(response.statusCode).toBe(StatusCodes.CREATED)
           if (field === "phoneNumber") {
             expect(response.body.contacts.phoneNumber).toHaveLength(
               contacts.phoneNumber.length
