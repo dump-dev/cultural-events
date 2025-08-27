@@ -5,6 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import LikeCulturalEventService from "./like-cultural-events.service";
 import { likeCulturalEventSchema } from "./schemas/like-cultural-event.schema";
 import { unlikeCulturalEventSchema } from "./schemas/unlike-cultural-event.schema";
+import { CulturalEventMapper } from "./cultural-event-mapper";
 
 export default class CuturalEventsController {
   constructor(
@@ -19,7 +20,9 @@ export default class CuturalEventsController {
     }
     const culturalEventParsed = parseResult.data;
     const culturalEvent = await this.eventsService.create(culturalEventParsed);
-    return res.send(culturalEvent);
+    return res
+      .status(StatusCodes.CREATED)
+      .send(CulturalEventMapper.toDetailedDTO(culturalEvent));
   }
 
   async getAll(req: Request, res: Response) {
