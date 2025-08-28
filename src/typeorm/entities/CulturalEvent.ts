@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -30,6 +31,7 @@ export default class CulturalEvent {
   @OneToOne(() => Location, (location) => location.cuturalEvent, {
     cascade: true,
   })
+  @JoinColumn()
   location: Location;
 
   @OneToMany(() => LikeCulturalEvent, likes => likes.culturalEvent, {
