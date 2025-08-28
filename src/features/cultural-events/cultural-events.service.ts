@@ -24,7 +24,7 @@ export default class CuturalEventsService {
     location.neighborhood = createDTO.location.neighborhood;
     location.city = createDTO.location.city;
     location.state = createDTO.location.state;
-    location.propertyNumber = createDTO.location.propertyNumber
+    location.propertyNumber = createDTO.location.propertyNumber;
     location.cep = createDTO.location.cep;
 
     const cuturalEvent = new CulturalEvent();
@@ -38,6 +38,8 @@ export default class CuturalEventsService {
   }
 
   async getCuturalEvents() {
-    return this.cuturalEventsRepository.find();
+    return this.cuturalEventsRepository.find({
+      relations: { organizer: true, location: true },
+    });
   }
 }
