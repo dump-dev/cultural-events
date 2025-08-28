@@ -13,10 +13,11 @@ export type CulturalEventDetailedDTO = {
   };
   location: {
     name: string;
-    address: string;
+    street: string;
+    neighborhood: string;
     city: string;
     state: string;
-    country: string;
-    zipCode: string;
+    cep: string;
+    propertyNumber: number;
   };
 };

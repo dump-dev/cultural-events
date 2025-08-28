@@ -17,11 +17,12 @@ export class CulturalEventMapper {
       },
       location: {
         name: location.name,
-        address: location.address,
+        street: location.street,
+        neighborhood: location.neighborhood,
         city: location.city,
         state: location.state,
-        country: location.country,
-        zipCode: location.zipCode,
+        cep: location.cep,
+        propertyNumber: location.propertyNumber
       },
     };
   }

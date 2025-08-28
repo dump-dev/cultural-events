@@ -17,7 +17,10 @@ export default class Location {
   name: string;
 
   @Column()
-  address: string;
+  street: string;
+
+  @Column()
+  neighborhood: string;
 
   @Column()
   city: string;
@@ -25,11 +28,11 @@ export default class Location {
   @Column()
   state: string;
 
-  @Column()
-  country: string;
+  @Column({ type: "int" })
+  propertyNumber: number;
 
-  @Column({ name: "zip_code" })
-  zipCode: string;
+  @Column()
+  cep: string;
 
   @CreateDateColumn()
   createatAt: Date;

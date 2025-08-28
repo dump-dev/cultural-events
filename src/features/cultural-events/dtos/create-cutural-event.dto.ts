@@ -1,10 +1,11 @@
 type LocationDTO = {
   name: string;
-  address: string;
+  street: string;
+  neighborhood: string;
   city: string;
   state: string;
-  country: string;
-  zipCode: string;
+  cep: string;
+  propertyNumber: number
 };
 
 export type CreateCuturalEventDTO = {

@@ -20,11 +20,12 @@ export default class CuturalEventsService {
 
     const location = new Location();
     location.name = createDTO.location.name;
-    location.address = createDTO.location.address;
+    location.street = createDTO.location.street;
+    location.neighborhood = createDTO.location.neighborhood;
     location.city = createDTO.location.city;
     location.state = createDTO.location.state;
-    location.country = createDTO.location.country;
-    location.zipCode = createDTO.location.zipCode;
+    location.propertyNumber = createDTO.location.propertyNumber
+    location.cep = createDTO.location.cep;
 
     const cuturalEvent = new CulturalEvent();
     cuturalEvent.title = createDTO.title;

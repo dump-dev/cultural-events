@@ -2,11 +2,12 @@ import * as z from "zod";
 
 const locationSchema = z.object({
   name: z.string(),
-  address: z.string(),
+  street: z.string(),
+  neighborhood: z.string(),
   city: z.string(),
   state: z.string(),
-  country: z.string(),
-  zipCode: z.string(),
+  cep: z.string().length(8),
+  propertyNumber: z.int()
 });
 
 export const createCuturalEventSchema = z.object({
