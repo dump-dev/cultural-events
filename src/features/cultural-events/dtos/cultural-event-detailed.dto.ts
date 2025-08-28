@@ -8,7 +8,7 @@ export type CulturalEventDetailedDTO = {
   organizer: {
     id: string;
     displayName: string;
-    deescription: string;
+    description: string;
     contacts?: OrganizerContacts;
   };
   location: {

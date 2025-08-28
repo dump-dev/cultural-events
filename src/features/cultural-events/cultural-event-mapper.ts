@@ -12,7 +12,7 @@ export class CulturalEventMapper {
       organizer: {
         id: organizer.id,
         displayName: organizer.displayName,
-        deescription: organizer.description,
+        description: organizer.description,
         contacts: organizer.contacts ?? undefined,
       },
       location: {

@@ -27,7 +27,7 @@ export default class CuturalEventsController {
 
   async getAll(req: Request, res: Response) {
     const culturalEvents = await this.eventsService.getCuturalEvents();
-    return res.status(StatusCodes.CREATED).send(culturalEvents);
+    return res.send(culturalEvents.map(CulturalEventMapper.toDetailedDTO));
   }
 
   async like(req: Request, res: Response) {
