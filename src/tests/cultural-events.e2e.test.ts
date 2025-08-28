@@ -47,17 +47,18 @@ describe("Router /cultural-events", () => {
         expect(response.body.date).toBe(culturalEvent.date.toISOString());
         expect(response.body.organizer.id).toBe(culturalEvent.organizerId);
         expect(response.body.location.name).toBe(culturalEvent.location.name);
-        expect(response.body.location.address).toBe(
-          culturalEvent.location.address
+        expect(response.body.location.street).toBe(
+          culturalEvent.location.street
+        );
+        expect(response.body.location.neighborhood).toBe(
+          culturalEvent.location.neighborhood
         );
         expect(response.body.location.city).toBe(culturalEvent.location.city);
         expect(response.body.location.state).toBe(culturalEvent.location.state);
-        expect(response.body.location.country).toBe(
-          culturalEvent.location.country
+        expect(response.body.location.propertyNumber).toBe(
+          culturalEvent.location.propertyNumber
         );
-        expect(response.body.location.zipCode).toBe(
-          culturalEvent.location.zipCode
-        );
+        expect(response.body.location.cep).toBe(culturalEvent.location.cep);
         expect(response.body.location).not.toHaveProperty("id");
       });
     });

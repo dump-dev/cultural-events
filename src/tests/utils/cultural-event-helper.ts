@@ -7,11 +7,12 @@ export const makeFakeCulturalEventData = (organizerId: string) => {
     organizerId,
     location: {
       name: faker.location.state(),
-      address: faker.location.street(),
+      street: faker.location.street(),
+      neighborhood: faker.location.county(),
       state: faker.location.state(),
       city: faker.location.city(),
-      country: faker.location.country(),
-      zipCode: faker.location.zipCode(),
+      propertyNumber: parseInt(faker.location.buildingNumber()),
+      cep: faker.string.numeric({ length: 8 }),
     },
     date: faker.date.soon({ days: 15 }),
   };
