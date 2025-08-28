@@ -8,7 +8,10 @@ import {
   createAndLoginOrganizer,
   makeFakeOrganizerData,
 } from "./utils/organizer-helper";
-import { makeFakeCulturalEventData } from "./utils/cultural-event-helper";
+import {
+  createCulturalEvent,
+  makeFakeCulturalEventData,
+} from "./utils/cultural-event-helper";
 import { StatusCodes } from "http-status-codes";
 
 jest.spyOn(console, "log").mockImplementation(() => {});
@@ -61,6 +64,38 @@ describe("Router /cultural-events", () => {
         expect(response.body.location.cep).toBe(culturalEvent.location.cep);
         expect(response.body.location).not.toHaveProperty("id");
       });
+    });
+  });
+
+  describe("GET /cultural-events", () => {
+    test("should return 200 with list of cultural events", async () => {
+      const SIZE = 5;
+      for (let i = 0; i < SIZE; i++) {
+        const { organizerId, accessToken } = await createAndLoginOrganizer(
+          testAgent,
+          makeFakeOrganizerData()
+        );
+
+        await createCulturalEvent({
+          testAgent,
+          organizer: {
+            id: organizerId,
+            accessToken,
+          },
+        });
+      }
+
+      const response = await testAgent.get("/cultural-events");
+      expect(response.statusCode).toBe(StatusCodes.OK);
+      expect(response.body).toHaveLength(SIZE);
+      for (let i = 0; i < SIZE; i++) {
+        expect(response.body[i]).toHaveProperty("id");
+        expect(response.body[i]).toHaveProperty("title");
+        expect(response.body[i]).toHaveProperty("description");
+        expect(response.body[i]).toHaveProperty("date");
+        expect(response.body[i]).toHaveProperty("location");
+        expect(response.body[i]).toHaveProperty("organizer");
+      }
     });
   });
 });

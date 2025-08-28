@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import TestAgent from "supertest/lib/agent";
 
 export const makeFakeCulturalEventData = (organizerId: string) => {
   return {
@@ -16,4 +17,24 @@ export const makeFakeCulturalEventData = (organizerId: string) => {
     },
     date: faker.date.soon({ days: 15 }),
   };
+};
+
+type CreateCulturalEvent = {
+  testAgent: TestAgent;
+  organizer: {
+    id: string;
+    accessToken: string;
+  };
+  culturalEvent?: ReturnType<typeof makeFakeCulturalEventData>;
+};
+export const createCulturalEvent = async ({
+  testAgent,
+  organizer,
+  culturalEvent,
+}: CreateCulturalEvent) => {
+  culturalEvent = culturalEvent ?? makeFakeCulturalEventData(organizer.id);
+  return testAgent
+    .post("/cultural-events")
+    .set("Authorization", `Bearer ${organizer.accessToken}`)
+    .send(culturalEvent);
 };
