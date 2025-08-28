@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import AuthService from "./auth.service";
-import { BlacklistService } from "./blacklist.service";
+import { JwtService } from "./jwt.service";
 
 export default async function ensureAutheticated(
   req: Request,
@@ -13,11 +12,8 @@ export default async function ensureAutheticated(
   }
 
   const [, accessToken] = req.headers.authorization.split(" ");
-  const payload = AuthService.verifyAccessToken(accessToken);
+  const payload = await JwtService.verifyAccessToken(accessToken);
   if (!payload) {
-    return res.sendStatus(StatusCodes.UNAUTHORIZED);
-  }
-  if (await BlacklistService.isAccessTokenBlacklisted(accessToken)) {
     return res.sendStatus(StatusCodes.UNAUTHORIZED);
   }
 

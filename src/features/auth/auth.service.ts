@@ -1,10 +1,8 @@
 import { Repository } from "typeorm";
 import User from "../../typeorm/entities/User";
 import { CredentialsDTO } from "./dtos/credentials.dto";
-import jwt from "jsonwebtoken";
-import { CreateAccessTokenDTO } from "./dtos/create-access-token.dto";
+import { JwtService } from "./jwt.service";
 import { InvalidCredentialsError } from "./types/InvalidCredentialsError";
-import { AccessPayload } from "./types/AccessPayload";
 
 export default class AuthService {
   constructor(private userRepository: Repository<User>) {}
@@ -19,29 +17,11 @@ export default class AuthService {
     if (!(await user.verifyPassword(credentials.password)))
       throw new InvalidCredentialsError();
 
-    const accessToken = AuthService.createAccessToken({
+    const accessToken = JwtService.createAccessToken({
       userId: user.id,
       role: user.role,
     });
 
     return { accessToken };
-  }
-
-  private static createAccessToken({ userId, role }: CreateAccessTokenDTO) {
-    return jwt.sign({ role }, process.env.JWT_PRIVATE_KEY as string, {
-      issuer: userId,
-      expiresIn: "1m",
-      algorithm: "RS256",
-    });
-  }
-
-  static verifyAccessToken(token: string) {
-    try {
-      return jwt.verify(token, process.env.JWT_PUBLIC_KEY as string, {
-        algorithms: ["RS256"],
-      }) as AccessPayload;
-    } catch {
-      return false;
-    }
   }
 }

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { BlacklistService } from "../auth/blacklist.service";
+import { JwtService } from "../auth/jwt.service";
 import createUserSchema from "./schemas/create-user.schema";
 import { deleteByUserIdSchema } from "./schemas/delete-by-user-id.schema";
 import { getByUserIdSchema } from "./schemas/get-by-user-id.schema";
@@ -46,7 +46,7 @@ export default class UsersController {
   async deleteMe(req: Request, res: Response) {
     await this.usersService.deleteUserById(req.user.id);
     const [, accessToken] = req.headers.authorization!.split(" ");
-    BlacklistService.addAccessToken(accessToken);
+    JwtService.revokeAccessToken(accessToken);
     return res.sendStatus(StatusCodes.NO_CONTENT);
   }
 
