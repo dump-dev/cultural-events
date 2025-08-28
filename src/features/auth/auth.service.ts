@@ -28,15 +28,18 @@ export default class AuthService {
   }
 
   private static createAccessToken({ userId, role }: CreateAccessTokenDTO) {
-    return jwt.sign({ role }, "temporary_key", {
+    return jwt.sign({ role }, process.env.JWT_PRIVATE_KEY as string, {
       issuer: userId,
       expiresIn: "1m",
+      algorithm: "RS256",
     });
   }
 
   static verifyAccessToken(token: string) {
     try {
-      return jwt.verify(token, "temporary_key") as AccessPayload;
+      return jwt.verify(token, process.env.JWT_PUBLIC_KEY as string, {
+        algorithms: ["RS256"],
+      }) as AccessPayload;
     } catch {
       return false;
     }
