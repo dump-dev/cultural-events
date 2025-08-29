@@ -1,6 +1,6 @@
 export class OrganizerNotFoundError extends Error {
-  constructor(id: string) {
-    super(`Not Found Organizer with id: ${id}`);
+  constructor() {
+    super(`Not Found Organizer`);
     this.name = "OrganizerNotFoundError";
   }
 }
