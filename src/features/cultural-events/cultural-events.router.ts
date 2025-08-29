@@ -51,6 +51,9 @@ culturalEventsRouter.delete(
 culturalEventsRouter.get("/", (req, res) =>
   culturalEventsController.getAll(req, res)
 );
+culturalEventsRouter.get("/:culturalEventId", (req, res) =>
+  culturalEventsController.getById(req, res)
+);
 culturalEventsRouter.post(
   "/:culturalEventId/like",
   ensureAutheticated,

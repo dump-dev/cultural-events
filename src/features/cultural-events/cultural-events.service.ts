@@ -96,6 +96,19 @@ export default class CuturalEventsService {
     });
   }
 
+  async getCulturalEventById(culturalEventId: string) {
+    const culturalEvent = this.cuturalEventsRepository.findOne({
+      where: { id: culturalEventId },
+      relations: {
+        organizer: true,
+        location: true,
+      },
+    });
+
+    if (!culturalEvent) throw new CulturalEventNotFoundError(culturalEventId);
+    return culturalEvent;
+  }
+
   async deleteCulturalEvent(deleteDTO: DeleteCulturalEventDTO) {
     const culturalEvent = await this.cuturalEventsRepository.findOne({
       where: {
