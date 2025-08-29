@@ -101,6 +101,41 @@ describe("Router /cultural-events", () => {
     });
   });
 
+  describe("GET /cultural-events/:culturalEventId", () => {
+    test("should return 200 with detailed cultural event data", async () => {
+      const organizer = makeFakeOrganizerData();
+      const { organizerId, accessToken } = await createAndLoginOrganizer(
+        testAgent,
+        organizer
+      );
+
+      const culturalEvent = makeFakeCulturalEventData(organizerId);
+      const responseCreate = await createCulturalEvent({
+        testAgent,
+        organizer: {
+          id: organizerId,
+          accessToken,
+        },
+        culturalEvent,
+      });
+      const { id: culturalEventId } = responseCreate.body;
+
+      const response = await testAgent.get(
+        `/cultural-events/${culturalEventId}`
+      );
+      expect(response.statusCode).toBe(StatusCodes.OK);
+      expect(response.body.id).toBe(culturalEventId);
+      expect(response.body.title).toBe(culturalEvent.title);
+      expect(response.body.description).toBe(culturalEvent.description);
+      expect(response.body.date).toBe(culturalEvent.date.toISOString());
+      expect(response.body.organizer.id).toBe(culturalEvent.organizerId);
+      expect(response.body.organizer.displayName).toBe(organizer.displayName);
+      expect(response.body.organizer.description).toBe(organizer.description);
+      expect(response.body.organizer.id).toBe(culturalEvent.organizerId);
+      expect(response.body.location).toEqual(culturalEvent.location);
+    });
+  });
+
   describe("PATCH /cultural-events/:culturalEventId", () => {
     describe("when user authenticated is an organizer", () => {
       test("should return 200 when event owner provides valid cultural event data", async () => {
