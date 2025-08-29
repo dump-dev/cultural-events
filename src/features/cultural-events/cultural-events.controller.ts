@@ -6,6 +6,7 @@ import LikeCulturalEventService from "./like-cultural-events.service";
 import { likeCulturalEventSchema } from "./schemas/like-cultural-event.schema";
 import { unlikeCulturalEventSchema } from "./schemas/unlike-cultural-event.schema";
 import { CulturalEventMapper } from "./cultural-event-mapper";
+import { updateCulturalEventSchema } from "./schemas/update-cultural.event.schema";
 
 export default class CuturalEventsController {
   constructor(
@@ -28,6 +29,27 @@ export default class CuturalEventsController {
   async getAll(req: Request, res: Response) {
     const culturalEvents = await this.eventsService.getCuturalEvents();
     return res.send(culturalEvents.map(CulturalEventMapper.toDetailedDTO));
+  }
+
+  async updateCulturalEventById(req: Request, res: Response) {
+    const parseResult = updateCulturalEventSchema.safeParse({
+      culturalEventId: req.params.culturalEventId,
+      ...req.body,
+    });
+
+    if (!parseResult.success) {
+      return res.status(StatusCodes.BAD_REQUEST).send(parseResult.error.issues);
+    }
+
+    const updateDTO = {
+      organizerId: await this.eventsService.getOrganizerIdByUserId(req.user.id),
+      ...parseResult.data,
+    };
+
+    const updatedCultural = await this.eventsService.updateCulturalEvent(
+      updateDTO
+    );
+    return res.send(CulturalEventMapper.toDetailedDTO(updatedCultural!));
   }
 
   async like(req: Request, res: Response) {

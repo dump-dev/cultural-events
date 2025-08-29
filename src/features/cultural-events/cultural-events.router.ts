@@ -15,8 +15,7 @@ const culturalEventsRouter = Router();
 const userRepository = dataSource.getRepository(User);
 const organizerRepository = dataSource.getRepository(Organizer);
 const culturalEventsRepository = dataSource.getRepository(CulturalEvent);
-const likeCulturalEventRepository =
-  dataSource.getRepository(LikeCulturalEvent);
+const likeCulturalEventRepository = dataSource.getRepository(LikeCulturalEvent);
 const culturalEventsService = new CuturalEventsService(
   culturalEventsRepository,
   organizerRepository
@@ -36,6 +35,12 @@ culturalEventsRouter.post(
   ensureAutheticated,
   canPerform(PermissionEnum.CULTURAL_EVENT_CREATE),
   (req, res) => culturalEventsController.create(req, res)
+);
+culturalEventsRouter.patch(
+  "/:culturalEventId",
+  ensureAutheticated,
+  canPerform(PermissionEnum.CULTURAL_EVENT_UPDATE),
+  (req, res) => culturalEventsController.updateCulturalEventById(req, res)
 );
 culturalEventsRouter.get("/", (req, res) =>
   culturalEventsController.getAll(req, res)
