@@ -101,7 +101,7 @@ describe("Router /cultural-events", () => {
     });
   });
 
-  describe("PATCH /cultural-events/:eventId", () => {
+  describe("PATCH /cultural-events/:culturalEventId", () => {
     describe("when user authenticated is an organizer", () => {
       test("should return 200 when event owner provides valid cultural event data", async () => {
         const { organizerId, accessToken } = await createAndLoginOrganizer(
