@@ -7,6 +7,7 @@ import { likeCulturalEventSchema } from "./schemas/like-cultural-event.schema";
 import { unlikeCulturalEventSchema } from "./schemas/unlike-cultural-event.schema";
 import { CulturalEventMapper } from "./cultural-event-mapper";
 import { updateCulturalEventSchema } from "./schemas/update-cultural.event.schema";
+import { deleteCulturalEventSchema } from "./schemas/delete-cultural-event.schema";
 
 export default class CuturalEventsController {
   constructor(
@@ -50,6 +51,22 @@ export default class CuturalEventsController {
       updateDTO
     );
     return res.send(CulturalEventMapper.toDetailedDTO(updatedCultural!));
+  }
+
+  async deleteCulturalEventById(req: Request, res: Response) {
+    const parseResult = deleteCulturalEventSchema.safeParse(req.params);
+    if (!parseResult.success) {
+      return res.status(StatusCodes.BAD_REQUEST).send(parseResult.error.issues);
+    }
+
+    const deleteDTO = {
+      organizerId: await this.eventsService.getOrganizerIdByUserId(req.user.id),
+      ...parseResult.data,
+    };
+
+    await this.eventsService.deleteCulturalEvent(deleteDTO);
+
+    return res.sendStatus(StatusCodes.NO_CONTENT);
   }
 
   async like(req: Request, res: Response) {

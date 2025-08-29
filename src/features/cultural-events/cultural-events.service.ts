@@ -7,6 +7,7 @@ import { OrganizerNotFoundError } from "../../errors/OrganizerNotFoundError";
 import { UpdateCulturalEventDTO } from "./dtos/update-cultural-event.dto";
 import { CulturalEventNotFoundError } from "../../errors/CulturalEventNotFoundError";
 import NotCulturalEventOwnerError from "../../errors/NotCulturalEventOwnerError";
+import { DeleteCulturalEventDTO } from "./dtos/delete-cultural-event.dto";
 
 export default class CuturalEventsService {
   constructor(
@@ -92,6 +93,26 @@ export default class CuturalEventsService {
   async getCuturalEvents() {
     return this.cuturalEventsRepository.find({
       relations: { organizer: true, location: true },
+    });
+  }
+
+  async deleteCulturalEvent(deleteDTO: DeleteCulturalEventDTO) {
+    const culturalEvent = await this.cuturalEventsRepository.findOne({
+      where: {
+        id: deleteDTO.culturalEventId,
+      },
+      relations: {
+        organizer: true,
+      },
+    });
+
+    if (!culturalEvent)
+      throw new CulturalEventNotFoundError(deleteDTO.culturalEventId);
+    if (culturalEvent.organizer.id !== deleteDTO.organizerId)
+      throw new NotCulturalEventOwnerError();
+
+    await this.cuturalEventsRepository.delete({
+      id: deleteDTO.culturalEventId,
     });
   }
 }
