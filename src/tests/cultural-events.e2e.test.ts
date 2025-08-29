@@ -13,6 +13,8 @@ import {
   makeFakeCulturalEventData,
 } from "./utils/cultural-event-helper";
 import { StatusCodes } from "http-status-codes";
+import { createAndLoginUser } from "./utils/user-helper";
+import { loginAdminAndReturnBody } from "./utils/admin-help";
 
 jest.spyOn(console, "log").mockImplementation(() => {});
 
@@ -96,6 +98,92 @@ describe("Router /cultural-events", () => {
         expect(response.body[i]).toHaveProperty("location");
         expect(response.body[i]).toHaveProperty("organizer");
       }
+    });
+  });
+
+  describe("PATCH /cultural-events/:eventId", () => {
+    describe("when user authenticated is an organizer", () => {
+      test("should return 200 when event owner provides valid cultural event data", async () => {
+        const { organizerId, accessToken } = await createAndLoginOrganizer(
+          testAgent,
+          makeFakeOrganizerData()
+        );
+
+        const responseCreate = await createCulturalEvent({
+          testAgent,
+          organizer: {
+            id: organizerId,
+            accessToken,
+          },
+        });
+        const { id: culturalEventId } = responseCreate.body;
+
+        const newCulturalEventData = makeFakeCulturalEventData(organizerId);
+        const response = await testAgent
+          .patch(`/cultural-events/${culturalEventId}`)
+          .set("Authorization", `Bearer ${accessToken}`)
+          .send(newCulturalEventData);
+
+        expect(response.statusCode).toBe(StatusCodes.OK);
+        expect(response.body.title).toBe(newCulturalEventData.title);
+        expect(response.body.description).toBe(
+          newCulturalEventData.description
+        );
+        expect(response.body.date).toBe(
+          newCulturalEventData.date.toISOString()
+        );
+        expect(response.body.location).toEqual(newCulturalEventData.location);
+      });
+
+      test("should return 403 when cultural event is updated by a non-owner organizer", async () => {
+        const ownerLogin = await createAndLoginOrganizer(
+          testAgent,
+          makeFakeOrganizerData()
+        );
+
+        const responseCreate = await createCulturalEvent({
+          testAgent,
+          organizer: {
+            id: ownerLogin.organizerId,
+            accessToken: ownerLogin.accessToken,
+          },
+        });
+        const { id: culturalEventId } = responseCreate.body;
+        const nonOwnerLogin = await createAndLoginOrganizer(
+          testAgent,
+          makeFakeOrganizerData()
+        );
+
+        const response = await testAgent
+          .patch(`/cultural-events/${culturalEventId}`)
+          .set("Authorization", `Bearer ${nonOwnerLogin.accessToken}`)
+          .send(makeFakeCulturalEventData(nonOwnerLogin.organizerId));
+        expect(response.statusCode).toBe(StatusCodes.FORBIDDEN);
+      });
+    });
+
+    describe("when user authenticated is not an organizer", () => {
+      test("should return 403", async () => {
+        const user = await createAndLoginUser(testAgent, {
+          name: "John Doe",
+          email: "john@test.com",
+          password: "super secure password",
+        });
+
+        const admin = await loginAdminAndReturnBody(testAgent);
+        const accessTokens = [user.accessToken, admin.accessToken];
+
+        for (const accessToken of accessTokens) {
+          const response = await testAgent
+            .patch(`/cultural-events/doesnt-exists-but-its-fine`)
+            .set("Authorization", `Bearer ${accessToken}`)
+            .send({
+              description: "some description",
+            });
+          expect(response.statusCode).toBe(StatusCodes.FORBIDDEN);
+          expect(response.body).not.toHaveProperty("description");
+        }
+      });
     });
   });
 });
