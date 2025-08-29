@@ -186,4 +186,79 @@ describe("Router /cultural-events", () => {
       });
     });
   });
+
+  describe("DELETE /cultural-events/:culturalEventId", () => {
+    describe("when user authenticated is an organizer", () => {
+      test("should return 204 when the organizer deletes their own event", async () => {
+        const { organizerId, accessToken } = await createAndLoginOrganizer(
+          testAgent,
+          makeFakeOrganizerData()
+        );
+
+        const responseCreate = await createCulturalEvent({
+          testAgent,
+          organizer: {
+            id: organizerId,
+            accessToken,
+          },
+        });
+        const { id: culturalEventId } = responseCreate.body;
+
+        const response = await testAgent
+          .delete(`/cultural-events/${culturalEventId}`)
+          .set("Authorization", `Bearer ${accessToken}`);
+        expect(response.statusCode).toBe(StatusCodes.NO_CONTENT);
+      });
+      test("should return 404 when the organizer tries to delete an event that was already deleted", async () => {
+        const { organizerId, accessToken } = await createAndLoginOrganizer(
+          testAgent,
+          makeFakeOrganizerData()
+        );
+
+        const responseCreate = await createCulturalEvent({
+          testAgent,
+          organizer: {
+            id: organizerId,
+            accessToken,
+          },
+        });
+        const { id: culturalEventId } = responseCreate.body;
+
+        await testAgent
+          .delete(`/cultural-events/${culturalEventId}`)
+          .set("Authorization", `Bearer ${accessToken}`);
+
+        const response = await testAgent
+          .delete(`/cultural-events/${culturalEventId}`)
+          .set("Authorization", `Bearer ${accessToken}`);
+        expect(response.statusCode).toBe(StatusCodes.NOT_FOUND);
+      });
+
+      test("should return 403 when the organizer attempts to delete an event they do not own", async () => {
+        const owner = await createAndLoginOrganizer(
+          testAgent,
+          makeFakeOrganizerData()
+        );
+
+        const responseCreate = await createCulturalEvent({
+          testAgent,
+          organizer: {
+            id: owner.organizerId,
+            accessToken: owner.accessToken,
+          },
+        });
+        const { id: culturalEventId } = responseCreate.body;
+
+        const noOwner = await createAndLoginOrganizer(
+          testAgent,
+          makeFakeOrganizerData()
+        );
+
+        const response = await testAgent
+          .delete(`/cultural-events/${culturalEventId}`)
+          .set("Authorization", `Bearer ${noOwner.accessToken}`);
+        expect(response.statusCode).toBe(StatusCodes.FORBIDDEN);
+      });
+    });
+  });
 });
