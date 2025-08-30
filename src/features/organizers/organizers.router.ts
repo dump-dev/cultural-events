@@ -6,11 +6,16 @@ import Organizer from "../../typeorm/entities/Organizer";
 import ensureAutheticated from "../auth/ensure-autheticated.middleware";
 import canPerform from "../permission/can-perform.middleware";
 import { PermissionEnum } from "../../constants/permission";
+import CulturalEvent from "../../typeorm/entities/CulturalEvent";
 
 const organizersRouter = Router();
 
 const organizersRepository = dataSource.getRepository(Organizer);
-const organizersService = new OrganizersService(organizersRepository);
+const culturalEventsRepository = dataSource.getRepository(CulturalEvent);
+const organizersService = new OrganizersService(
+  organizersRepository,
+  culturalEventsRepository
+);
 const organizerContoller = new OrganizersController(organizersService);
 organizersRouter.post("/", (req, res) => organizerContoller.create(req, res));
 organizersRouter.get(
@@ -24,6 +29,9 @@ organizersRouter.get(
   ensureAutheticated,
   canPerform(PermissionEnum.ORGANIZER_DETAILS),
   (req, res) => organizerContoller.getById(req, res)
+);
+organizersRouter.get("/:organizerId/cultural-events", (req, res) =>
+  organizerContoller.getEventsByOrganizerId(req, res)
 );
 
 export default organizersRouter;

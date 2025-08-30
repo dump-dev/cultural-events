@@ -1,4 +1,4 @@
-export type CulturalEventSummaryDTO = {
+export type CulturalEventSummaryWithOrganizerDTO = {
   id: string;
   title: string;
   organizer: {
@@ -12,3 +12,8 @@ export type CulturalEventSummaryDTO = {
   };
   date: Date;
 };
+
+export type CulturalEventSummaryWithoutOrganizerDTO = Omit<
+  CulturalEventSummaryWithOrganizerDTO,
+  "organizer"
+>;

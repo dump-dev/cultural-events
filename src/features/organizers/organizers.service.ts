@@ -5,9 +5,13 @@ import { CreateOrganizersDTO } from "./dtos/create-organizer.dto";
 import { RoleEnum } from "../../constants/role";
 import UserAlreadyExistsError from "../../errors/UserAlreadyExistsError";
 import { OrganizerNotFoundError } from "../../errors/OrganizerNotFoundError";
+import CulturalEvent from "../../typeorm/entities/CulturalEvent";
 
 export default class OrganizersService {
-  constructor(private organizersRepository: Repository<Organizer>) {}
+  constructor(
+    private organizersRepository: Repository<Organizer>,
+    private culturalEventsRepository: Repository<CulturalEvent>
+  ) {}
 
   async create(organizerDTO: CreateOrganizersDTO) {
     const hasUserWithEmail = await this.organizersRepository.findOneBy({
@@ -50,5 +54,18 @@ export default class OrganizersService {
 
     if (!organizer) throw new OrganizerNotFoundError();
     return organizer;
+  }
+
+  async findCulturalEventsByOrganizerId(organizerId: string) {
+    return this.culturalEventsRepository.find({
+      where: {
+        organizer: {
+          id: organizerId,
+        },
+      },
+      relations: {
+        location: true,
+      },
+    });
   }
 }

@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import OrganizersService from "./organizers.service";
 import { StatusCodes } from "http-status-codes";
-import { createOrganizerSchema } from "./schemas/create-organizer.schema";
 import OrganizerMapper from "./organizer.mapper";
+import OrganizersService from "./organizers.service";
+import { createOrganizerSchema } from "./schemas/create-organizer.schema";
+import { getCulturalEventsByOrganizerId } from "./schemas/get-cultural-events-by-organizer-id.schema";
 import { getOrganizerByIdSchema } from "./schemas/get-organizer-by-id.schema";
 
 export default class OrganizersController {
@@ -36,5 +37,22 @@ export default class OrganizersController {
     );
 
     return res.send(OrganizerMapper.toDetailedWithoutRoleDTO(organizer));
+  }
+
+  async getEventsByOrganizerId(req: Request, res: Response) {
+    const parseResult = getCulturalEventsByOrganizerId.safeParse(req.params);
+    if (!parseResult.success) {
+      return res.status(StatusCodes.BAD_REQUEST).send(parseResult.error.issues);
+    }
+    const { organizerId } = parseResult.data;
+    const organizer = await this.organizersService.getOrganizerById(
+      organizerId
+    );
+    const culturalEvents =
+      await this.organizersService.findCulturalEventsByOrganizerId(organizerId);
+
+    return res.send(
+      OrganizerMapper.toOrganizerEventsDTO(organizer, culturalEvents)
+    );
   }
 }

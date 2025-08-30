@@ -1,9 +1,13 @@
+import CulturalEvent from "../../typeorm/entities/CulturalEvent";
 import Organizer from "../../typeorm/entities/Organizer";
+import { CulturalEventMapper } from "../cultural-events/cultural-event-mapper";
 import {
   OrganizerDetailedWithoutRoleDTO,
   OrganizerDetailedWithRoleDTO,
 } from "./dtos/organizer-detailed.dto";
+import { OrganizerEventsDTO } from "./dtos/organizer-events.dto";
 import { OrganizerSummaryDTO } from "./dtos/organizer-summary.dto";
+import { PublicOrganizerDTO } from "./dtos/public-organizer.dto";
 
 export default class OrganizerMapper {
   static toDetailedWithoutRoleDTO(
@@ -54,6 +58,34 @@ export default class OrganizerMapper {
         name: user.name,
         authEmail: user.authEmail,
       },
+    };
+  }
+
+  static toPublicOrganizerDTO(organizer: Organizer): PublicOrganizerDTO {
+    return {
+      id: organizer.id,
+      displayName: organizer.displayName,
+      description: organizer.description,
+      ...organizer?.contacts,
+    };
+  }
+
+  static toOrganizerEventsDTO(
+    organizer: Organizer,
+    culturalEvents: Array<CulturalEvent>
+  ): OrganizerEventsDTO {
+    if (culturalEvents.length === 0) {
+      return {
+        organizer: OrganizerMapper.toPublicOrganizerDTO(organizer),
+        culturalEvents: [],
+      };
+    }
+
+    return {
+      organizer: OrganizerMapper.toPublicOrganizerDTO(organizer),
+      culturalEvents: culturalEvents.map(
+        CulturalEventMapper.toSummaryWithoutOrganizerDTO
+      ),
     };
   }
 }
