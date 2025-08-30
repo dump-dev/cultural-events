@@ -7,8 +7,8 @@ import { CreateAccessTokenDTO } from "./dtos/create-access-token.dto";
 const blacklistRepository: BlacklistRepository = new BlacklistRepositoryRedis();
 
 export class JwtService {
-  static createAccessToken({ userId, role }: CreateAccessTokenDTO) {
-    return jwt.sign({ role }, process.env.JWT_PRIVATE_KEY as string, {
+  static createAccessToken({ userId, firstName, role }: CreateAccessTokenDTO) {
+    return jwt.sign({ firstName, role }, process.env.JWT_PRIVATE_KEY as string, {
       issuer: userId,
       expiresIn: "1m",
       algorithm: "RS256",

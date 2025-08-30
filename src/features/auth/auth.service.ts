@@ -19,6 +19,7 @@ export default class AuthService {
 
     const accessToken = JwtService.createAccessToken({
       userId: user.id,
+      firstName: user.name.split(" ")[0],
       role: user.role,
     });
 
