@@ -14,6 +14,10 @@ import {
 } from "./utils/organizer-helper";
 import { loginAdminAndReturnBody } from "./utils/admin-help";
 import { createAndLoginUser } from "./utils/user-helper";
+import {
+  createCulturalEvent,
+  makeFakeCulturalEventData,
+} from "./utils/cultural-event-helper";
 
 jest.spyOn(console, "log").mockImplementation(() => {});
 
@@ -196,7 +200,7 @@ describe("Router /organizers", () => {
           expect(response.body.user).toHaveProperty("id");
           expect(response.body.user.name).toBe(organizer.name);
           expect(response.body.user.authEmail).toBe(organizer.email);
-          expect(response.body.user).not.toHaveProperty('role')
+          expect(response.body.user).not.toHaveProperty("role");
           expect(response.body.user).not.toHaveProperty("password");
         }
       });
@@ -214,6 +218,73 @@ describe("Router /organizers", () => {
         .set("Authorization", `Bearer ${accessToken}`);
 
       expect(response.statusCode).toBe(StatusCodes.FORBIDDEN);
+    });
+  });
+
+  describe("GET /organizers/:organizerId/cultural-events", () => {
+    test("should return 200 with cultural events of an organizer when organizer exists", async () => {
+      const organizer = makeFakeOrganizerData();
+      const { organizerId, accessToken } = await createAndLoginOrganizer(
+        testAgent,
+        organizer
+      );
+      const TOTAL_CULTURAL_EVENTS = 5;
+      const culturalEvents = Array.from({ length: TOTAL_CULTURAL_EVENTS }, () =>
+        makeFakeCulturalEventData(organizerId)
+      );
+      for (const culturalEvent of culturalEvents) {
+        await createCulturalEvent({
+          testAgent,
+          culturalEvent,
+          organizer: { id: organizerId, accessToken },
+        });
+      }
+
+      const response = await testAgent.get(
+        `/organizers/${organizerId}/cultural-events`
+      );
+      expect(response.statusCode).toBe(StatusCodes.OK);
+      expect(response.body.organizer.displayName).toBe(organizer.displayName);
+      expect(response.body.organizer.description).toBe(organizer.description);
+      expect(response.body.organizer).not.toHaveProperty("name");
+      expect(response.body.organizer).not.toHaveProperty("authEmail");
+      expect(response.body.organizer).not.toHaveProperty("user");
+      expect(response.body.organizer).not.toHaveProperty("contacts");
+
+      expect(response.body.culturalEvents).toHaveLength(TOTAL_CULTURAL_EVENTS);
+      for (const culturalEvent of response.body.culturalEvents) {
+        expect(culturalEvent).toHaveProperty("id");
+        expect(culturalEvent).toHaveProperty("title");
+        expect(culturalEvent).toHaveProperty("location");
+        expect(culturalEvent).toHaveProperty("date");
+        expect(culturalEvent.location).toHaveProperty("name");
+        expect(culturalEvent.location).toHaveProperty("city");
+        expect(culturalEvent.location).toHaveProperty("state");
+        expect(culturalEvent).not.toHaveProperty("organizer");
+      }
+    });
+
+    test("should return 200 with organizer and culturalEvents as empty array when organizer has no registered events", async () => {
+      const organizer = makeFakeOrganizerData();
+      const { organizerId } = await createAndLoginOrganizer(
+        testAgent,
+        organizer
+      );
+
+      const response = await testAgent.get(
+        `/organizers/${organizerId}/cultural-events`
+      );
+      expect(response.statusCode).toBe(StatusCodes.OK);
+      expect(response.body).toHaveProperty("organizer");
+      expect(response.body.culturalEvents).toHaveLength(0);
+    });
+
+    test("should return 404 when organizer doest not exist", async () => {
+      const organizerId = "66fed3de-3b39-428d-9ba2-bc1def1a4764";
+      const response = await testAgent.get(
+        `/organizers/${organizerId}/cultural-events`
+      );
+      expect(response.statusCode).toBe(StatusCodes.NOT_FOUND);
     });
   });
 });
