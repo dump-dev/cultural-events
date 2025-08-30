@@ -136,7 +136,7 @@ describe("Router /cultural-events", () => {
       expect(response.body.description).toBe(culturalEvent.description);
       expect(response.body.date).toBe(culturalEvent.date.toISOString());
       expect(response.body.organizer.id).toBe(culturalEvent.organizerId);
-      expect(response.body.organizer.displayName).toBe(organizer.displayName);
+      expect(response.body.organizer.name).toBe(organizer.displayName);
       expect(response.body.organizer.description).toBe(organizer.description);
       expect(response.body.organizer.id).toBe(culturalEvent.organizerId);
       expect(response.body.location).toEqual(culturalEvent.location);
