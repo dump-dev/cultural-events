@@ -12,7 +12,7 @@ export class CulturalEventMapper {
       date: date.toISOString(),
       organizer: {
         id: organizer.id,
-        displayName: organizer.displayName,
+        name: organizer.displayName,
         description: organizer.description,
         contacts: organizer.contacts ?? undefined,
       },
