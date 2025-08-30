@@ -17,7 +17,7 @@ export default class OrganizersController {
     const organizer = await this.organizersService.create(organizerParsed);
     return res
       .status(StatusCodes.CREATED)
-      .send(OrganizerMapper.toDetailedDTO(organizer));
+      .send(OrganizerMapper.toDetailedWithRoleDTO(organizer));
   }
 
   async getAll(req: Request, res: Response) {
@@ -35,6 +35,6 @@ export default class OrganizersController {
       organizerId
     );
 
-    return res.send(OrganizerMapper.toDetailedDTO(organizer));
+    return res.send(OrganizerMapper.toDetailedWithoutRoleDTO(organizer));
   }
 }
