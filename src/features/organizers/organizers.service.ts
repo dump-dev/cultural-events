@@ -4,6 +4,7 @@ import User from "../../typeorm/entities/User";
 import { CreateOrganizersDTO } from "./dtos/create-organizer.dto";
 import { RoleEnum } from "../../constants/role";
 import UserAlreadyExistsError from "../../errors/UserAlreadyExistsError";
+import { OrganizerNotFoundError } from "../../errors/OrganizerNotFoundError";
 
 export default class OrganizersService {
   constructor(private organizersRepository: Repository<Organizer>) {}
@@ -35,5 +36,19 @@ export default class OrganizersService {
     return this.organizersRepository.find({
       relations: { user: true },
     });
+  }
+
+  async getOrganizerById(organizerId: string) {
+    const organizer = await this.organizersRepository.findOne({
+      where: {
+        id: organizerId,
+      },
+      relations: {
+        user: true,
+      },
+    });
+
+    if (!organizer) throw new OrganizerNotFoundError();
+    return organizer;
   }
 }

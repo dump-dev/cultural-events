@@ -19,5 +19,11 @@ organizersRouter.get(
   canPerform(PermissionEnum.ORGANIZER_LIST),
   (req, res) => organizerContoller.getAll(req, res)
 );
+organizersRouter.get(
+  "/:organizerId",
+  ensureAutheticated,
+  canPerform(PermissionEnum.ORGANIZER_DETAILS),
+  (req, res) => organizerContoller.getById(req, res)
+);
 
 export default organizersRouter;
