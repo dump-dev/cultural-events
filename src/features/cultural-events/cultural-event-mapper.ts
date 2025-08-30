@@ -1,5 +1,6 @@
 import CulturalEvent from "../../typeorm/entities/CulturalEvent";
 import { CulturalEventDetailedDTO } from "./dtos/cultural-event-detailed.dto";
+import { CulturalEventSummaryDTO } from "./dtos/cultural-event-summary.dto";
 
 export class CulturalEventMapper {
   static toDetailedDTO(culturalEvent: CulturalEvent): CulturalEventDetailedDTO {
@@ -22,8 +23,26 @@ export class CulturalEventMapper {
         city: location.city,
         state: location.state,
         cep: location.cep,
-        propertyNumber: location.propertyNumber
+        propertyNumber: location.propertyNumber,
       },
+    };
+  }
+
+  static toSummaryDTO(culturalEvent: CulturalEvent): CulturalEventSummaryDTO {
+    const { id, title, organizer, location, date } = culturalEvent;
+    return {
+      id,
+      title,
+      organizer: {
+        id: organizer.id,
+        name: organizer.displayName,
+      },
+      location: {
+        name: location.name,
+        city: location.city,
+        state: location.state,
+      },
+      date,
     };
   }
 }
