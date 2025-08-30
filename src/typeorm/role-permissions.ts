@@ -12,12 +12,11 @@ const rolePermissions = {
     PermissionEnum.LIKE_CULTURAL_EVENT,
     PermissionEnum.UNLIKE_CULTURAL_EVENT,
 
-    PermissionEnum.ORGANIZER_LIST,
     PermissionEnum.CULTURAL_EVENT_LIST,
   ],
 
   [RoleEnum.ORGANIZER]: [
-    PermissionEnum.ORGANIZER_LIST,
+    PermissionEnum.ORGANIZER_DETAILS,
     PermissionEnum.ORGANIZER_CREATE,
     PermissionEnum.ORGANIZER_UPDATE,
     PermissionEnum.ORGANIZER_DELETE,
@@ -35,6 +34,7 @@ const rolePermissions = {
     PermissionEnum.USER_DELETE,
 
     PermissionEnum.ORGANIZER_LIST,
+    PermissionEnum.ORGANIZER_DETAILS,
     PermissionEnum.ORGANIZER_DELETE,
 
     PermissionEnum.CULTURAL_EVENT_LIST,
