@@ -90,7 +90,7 @@ describe("Router /organizers", () => {
   });
 
   describe("GET /organizers", () => {
-    describe("when user authenticated is an admin", () => {
+    describe("when authenticated user is an admin", () => {
       test("should return 200 with summurized organizers", async () => {
         const organizer = makeFakeOrganizerData();
         const registerResponse = await registerOrganizer(testAgent, organizer);
@@ -113,7 +113,7 @@ describe("Router /organizers", () => {
       });
     });
 
-    describe("when user authenticated is not an admin", () => {
+    describe("when authenticated user is not an admin", () => {
       test("should return 403", async () => {
         const user = await createAndLoginUser(testAgent, {
           name: "John Doe",
