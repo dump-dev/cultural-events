@@ -11,8 +11,8 @@ export default class OrganizersService {
   async create(organizerDTO: CreateOrganizersDTO) {
     const hasUserWithEmail = await this.organizersRepository.findOneBy({
       user: {
-        authEmail: organizerDTO.email
-      }
+        authEmail: organizerDTO.email,
+      },
     });
     if (hasUserWithEmail) throw new UserAlreadyExistsError();
 
@@ -32,6 +32,8 @@ export default class OrganizersService {
   }
 
   getOrganizers() {
-    return this.organizersRepository.find();
+    return this.organizersRepository.find({
+      relations: { user: true },
+    });
   }
 }
