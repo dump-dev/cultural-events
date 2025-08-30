@@ -45,7 +45,7 @@ culturalEventsRouter.patch(
 culturalEventsRouter.delete(
   "/:culturalEventId",
   ensureAutheticated,
-  canPerform(PermissionEnum.CULTURAL_EVENT_UPDATE),
+  canPerform(PermissionEnum.CULTURAL_EVENT_DELETE),
   (req, res) => culturalEventsController.deleteCulturalEventById(req, res)
 );
 culturalEventsRouter.get("/", (req, res) =>
