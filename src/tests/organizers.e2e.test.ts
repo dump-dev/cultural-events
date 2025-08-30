@@ -196,6 +196,7 @@ describe("Router /organizers", () => {
           expect(response.body.user).toHaveProperty("id");
           expect(response.body.user.name).toBe(organizer.name);
           expect(response.body.user.authEmail).toBe(organizer.email);
+          expect(response.body.user).not.toHaveProperty('role')
           expect(response.body.user).not.toHaveProperty("password");
         }
       });
