@@ -137,4 +137,82 @@ describe("Router /organizers", () => {
       });
     });
   });
+
+  describe("GET /organizers/:organizerId", () => {
+    describe("when authenticated user has permission to view organizer details", () => {
+      test("should return 200 with detailed organizer data without contacts", async () => {
+        const organizer = makeFakeOrganizerData();
+        const responseOrganizer = await createAndLoginOrganizer(
+          testAgent,
+          organizer
+        );
+        const { organizerId } = responseOrganizer;
+        const responseAdmin = await loginAdminAndReturnBody(testAgent);
+
+        const accessTokens = [
+          responseOrganizer.accessToken,
+          responseAdmin.accessToken,
+        ];
+
+        for (const accessToken of accessTokens) {
+          const response = await testAgent
+            .get(`/organizers/${organizerId}`)
+            .set("Authorization", `Bearer ${accessToken}`);
+          expect(response.statusCode).toBe(StatusCodes.OK);
+          expect(response.body.id).toBe(organizerId);
+          expect(response.body.displayName).toBe(organizer.displayName);
+          expect(response.body.description).toBe(organizer.description);
+          expect(response.body).not.toHaveProperty("contancts");
+          expect(response.body.user).toHaveProperty("id");
+          expect(response.body.user.name).toBe(organizer.name);
+          expect(response.body.user.authEmail).toBe(organizer.email);
+          expect(response.body.user).not.toHaveProperty("password");
+        }
+      });
+      test("should return 200 with detailed organizer data with contacts", async () => {
+        const contacts = makeFakeContactsFull();
+        const organizer = makeFakeOrganizerData(contacts);
+        const responseOrganizer = await createAndLoginOrganizer(
+          testAgent,
+          organizer
+        );
+        const { organizerId } = responseOrganizer;
+        const responseAdmin = await loginAdminAndReturnBody(testAgent);
+
+        const accessTokens = [
+          responseOrganizer.accessToken,
+          responseAdmin.accessToken,
+        ];
+
+        for (const accessToken of accessTokens) {
+          const response = await testAgent
+            .get(`/organizers/${organizerId}`)
+            .set("Authorization", `Bearer ${accessToken}`);
+          expect(response.statusCode).toBe(StatusCodes.OK);
+          expect(response.body.id).toBe(organizerId);
+          expect(response.body.displayName).toBe(organizer.displayName);
+          expect(response.body.description).toBe(organizer.description);
+          expect(response.body.contacts).toEqual(contacts);
+          expect(response.body.user).toHaveProperty("id");
+          expect(response.body.user.name).toBe(organizer.name);
+          expect(response.body.user.authEmail).toBe(organizer.email);
+          expect(response.body.user).not.toHaveProperty("password");
+        }
+      });
+    });
+
+    test("should return 403 when authenticated user does not have permission to view organizer details", async () => {
+      const { accessToken } = await createAndLoginUser(testAgent, {
+        name: "John Doe",
+        email: "johndoe@test.com",
+        password: "super secret password",
+      });
+
+      const response = await testAgent
+        .get(`/organizers/some-organizer-id`)
+        .set("Authorization", `Bearer ${accessToken}`);
+
+      expect(response.statusCode).toBe(StatusCodes.FORBIDDEN);
+    });
+  });
 });
