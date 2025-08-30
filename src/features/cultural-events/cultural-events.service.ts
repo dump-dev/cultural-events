@@ -42,18 +42,10 @@ export default class CuturalEventsService {
   }
 
   async updateCulturalEvent(updateDTO: UpdateCulturalEventDTO) {
-    const culturalEvent = await this.cuturalEventsRepository.findOne({
-      where: {
-        id: updateDTO.culturalEventId,
-      },
-      relations: {
-        location: true,
-        organizer: true,
-      },
-    });
+    const culturalEvent = await this.getCulturalEventById(
+      updateDTO.culturalEventId
+    );
 
-    if (!culturalEvent)
-      throw new CulturalEventNotFoundError(updateDTO.culturalEventId);
     if (culturalEvent.organizer.id !== updateDTO.organizerId)
       throw new NotCulturalEventOwnerError();
 
@@ -97,7 +89,7 @@ export default class CuturalEventsService {
   }
 
   async getCulturalEventById(culturalEventId: string) {
-    const culturalEvent = this.cuturalEventsRepository.findOne({
+    const culturalEvent = await this.cuturalEventsRepository.findOne({
       where: { id: culturalEventId },
       relations: {
         organizer: true,
