@@ -70,7 +70,7 @@ describe("Router /cultural-events", () => {
   });
 
   describe("GET /cultural-events", () => {
-    test("should return 200 with list of cultural events", async () => {
+    test("should return 200 with list of summarized cultural events", async () => {
       const SIZE = 5;
       for (let i = 0; i < SIZE; i++) {
         const { organizerId, accessToken } = await createAndLoginOrganizer(
@@ -93,10 +93,17 @@ describe("Router /cultural-events", () => {
       for (let i = 0; i < SIZE; i++) {
         expect(response.body[i]).toHaveProperty("id");
         expect(response.body[i]).toHaveProperty("title");
-        expect(response.body[i]).toHaveProperty("description");
+        expect(response.body[i]).not.toHaveProperty("description");
         expect(response.body[i]).toHaveProperty("date");
-        expect(response.body[i]).toHaveProperty("location");
-        expect(response.body[i]).toHaveProperty("organizer");
+        expect(response.body[i].location).toHaveProperty("name");
+        expect(response.body[i].location).toHaveProperty("city");
+        expect(response.body[i].location).toHaveProperty("state");
+        expect(response.body[i].location).not.toHaveProperty("street");
+        expect(response.body[i].location).not.toHaveProperty("cep");
+        expect(response.body[i].organizer).toHaveProperty("id");
+        expect(response.body[i].organizer).toHaveProperty("name");
+        expect(response.body[i].organizer).not.toHaveProperty("description");
+        expect(response.body[i].organizer).not.toHaveProperty("contancts");
       }
     });
   });
