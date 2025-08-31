@@ -266,15 +266,8 @@ describe("Router /organizers", () => {
         `/organizers/${organizerId}/cultural-events`
       );
       expect(response.statusCode).toBe(StatusCodes.OK);
-      expect(response.body.organizer.displayName).toBe(organizer.displayName);
-      expect(response.body.organizer.description).toBe(organizer.description);
-      expect(response.body.organizer).not.toHaveProperty("name");
-      expect(response.body.organizer).not.toHaveProperty("authEmail");
-      expect(response.body.organizer).not.toHaveProperty("user");
-      expect(response.body.organizer).not.toHaveProperty("contacts");
-
-      expect(response.body.culturalEvents).toHaveLength(TOTAL_CULTURAL_EVENTS);
-      for (const culturalEvent of response.body.culturalEvents) {
+      expect(response.body).toHaveLength(TOTAL_CULTURAL_EVENTS);
+      for (const culturalEvent of response.body) {
         expect(culturalEvent).toHaveProperty("id");
         expect(culturalEvent).toHaveProperty("title");
         expect(culturalEvent).toHaveProperty("location");
@@ -297,8 +290,7 @@ describe("Router /organizers", () => {
         `/organizers/${organizerId}/cultural-events`
       );
       expect(response.statusCode).toBe(StatusCodes.OK);
-      expect(response.body).toHaveProperty("organizer");
-      expect(response.body.culturalEvents).toHaveLength(0);
+      expect(response.body).toHaveLength(0);
     });
 
     test("should return 404 when organizer doest not exist", async () => {
