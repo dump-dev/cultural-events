@@ -57,6 +57,11 @@ export default class OrganizersService {
   }
 
   async findCulturalEventsByOrganizerId(organizerId: string) {
+    const organizer = await this.organizersRepository.findOneBy({
+      id: organizerId,
+    });
+    if (!organizer) throw new OrganizerNotFoundError();
+
     return this.culturalEventsRepository.find({
       where: {
         organizer: {

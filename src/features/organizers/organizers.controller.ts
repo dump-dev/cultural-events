@@ -50,14 +50,9 @@ export default class OrganizersController {
       return res.status(StatusCodes.BAD_REQUEST).send(parseResult.error.issues);
     }
     const { organizerId } = parseResult.data;
-    const organizer = await this.organizersService.getOrganizerById(
-      organizerId
-    );
     const culturalEvents =
       await this.organizersService.findCulturalEventsByOrganizerId(organizerId);
 
-    return res.send(
-      OrganizerMapper.toOrganizerEventsDTO(organizer, culturalEvents)
-    );
+    return res.send(OrganizerMapper.toOrganizerEventsDTO(culturalEvents));
   }
 }

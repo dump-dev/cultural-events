@@ -71,21 +71,8 @@ export default class OrganizerMapper {
   }
 
   static toOrganizerEventsDTO(
-    organizer: Organizer,
     culturalEvents: Array<CulturalEvent>
   ): OrganizerEventsDTO {
-    if (culturalEvents.length === 0) {
-      return {
-        organizer: OrganizerMapper.toPublicOrganizerDTO(organizer),
-        culturalEvents: [],
-      };
-    }
-
-    return {
-      organizer: OrganizerMapper.toPublicOrganizerDTO(organizer),
-      culturalEvents: culturalEvents.map(
-        CulturalEventMapper.toSummaryWithoutOrganizerDTO
-      ),
-    };
+    return culturalEvents.map(CulturalEventMapper.toSummaryWithoutOrganizerDTO);
   }
 }
