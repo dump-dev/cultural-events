@@ -5,6 +5,7 @@ import OrganizersService from "./organizers.service";
 import { createOrganizerSchema } from "./schemas/create-organizer.schema";
 import { getCulturalEventsByOrganizerId } from "./schemas/get-cultural-events-by-organizer-id.schema";
 import { getOrganizerByIdSchema } from "./schemas/get-organizer-by-id.schema";
+import { RoleEnum } from "../../constants/role";
 
 export default class OrganizersController {
   constructor(private organizersService: OrganizersService) {}
@@ -35,6 +36,10 @@ export default class OrganizersController {
     const organizer = await this.organizersService.getOrganizerById(
       organizerId
     );
+
+    if (!req.user || req?.user?.role === RoleEnum.USER) {
+      return res.send(OrganizerMapper.toPublicOrganizerDTO(organizer));
+    }
 
     return res.send(OrganizerMapper.toDetailedWithoutRoleDTO(organizer));
   }

@@ -7,6 +7,7 @@ import ensureAutheticated from "../auth/ensure-autheticated.middleware";
 import canPerform from "../permission/can-perform.middleware";
 import { PermissionEnum } from "../../constants/permission";
 import CulturalEvent from "../../typeorm/entities/CulturalEvent";
+import optionalAuthenticated from "../auth/optinal-authenticated.middleware";
 
 const organizersRouter = Router();
 
@@ -24,11 +25,8 @@ organizersRouter.get(
   canPerform(PermissionEnum.ORGANIZER_LIST),
   (req, res) => organizerContoller.getAll(req, res)
 );
-organizersRouter.get(
-  "/:organizerId",
-  ensureAutheticated,
-  canPerform(PermissionEnum.ORGANIZER_DETAILS),
-  (req, res) => organizerContoller.getById(req, res)
+organizersRouter.get("/:organizerId", optionalAuthenticated, (req, res) =>
+  organizerContoller.getById(req, res)
 );
 organizersRouter.get("/:organizerId/cultural-events", (req, res) =>
   organizerContoller.getEventsByOrganizerId(req, res)
