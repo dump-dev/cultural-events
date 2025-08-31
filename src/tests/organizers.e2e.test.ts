@@ -143,7 +143,7 @@ describe("Router /organizers", () => {
   });
 
   describe("GET /organizers/:organizerId", () => {
-    describe("when authenticated user has permission to view organizer details", () => {
+    describe("when authenticated user is an organizer or admin", () => {
       test("should return 200 with detailed organizer data without contacts", async () => {
         const organizer = makeFakeOrganizerData();
         const responseOrganizer = await createAndLoginOrganizer(
@@ -206,7 +206,11 @@ describe("Router /organizers", () => {
       });
     });
 
-    test("should return 403 when authenticated user does not have permission to view organizer details", async () => {
+    test("should return 200 with public data for authenticated users with role 'user'", async () => {
+      const organizer = makeFakeOrganizerData();
+      const registerReponse = await registerOrganizer(testAgent, organizer);
+      const { id: organizerId } = registerReponse.body;
+
       const { accessToken } = await createAndLoginUser(testAgent, {
         name: "John Doe",
         email: "johndoe@test.com",
@@ -214,10 +218,28 @@ describe("Router /organizers", () => {
       });
 
       const response = await testAgent
-        .get(`/organizers/some-organizer-id`)
+        .get(`/organizers/${organizerId}`)
         .set("Authorization", `Bearer ${accessToken}`);
+      expect(response.statusCode).toBe(StatusCodes.OK);
+      expect(response.body.id).toBe(organizerId);
+      expect(response.body.displayName).toBe(organizer.displayName);
+      expect(response.body.description).toBe(organizer.description);
+      expect(response.body.contacts).toBe(organizer.contacts);
+      expect(response.body).not.toHaveProperty("user");
+    });
 
-      expect(response.statusCode).toBe(StatusCodes.FORBIDDEN);
+    test("should return 200 with public data when user is not authenticated", async () => {
+      const organizer = makeFakeOrganizerData();
+      const registerReponse = await registerOrganizer(testAgent, organizer);
+      const { id: organizerId } = registerReponse.body;
+
+      const response = await testAgent.get(`/organizers/${organizerId}`);
+      expect(response.statusCode).toBe(StatusCodes.OK);
+      expect(response.body.id).toBe(organizerId);
+      expect(response.body.displayName).toBe(organizer.displayName);
+      expect(response.body.description).toBe(organizer.description);
+      expect(response.body.contacts).toBe(organizer.contacts);
+      expect(response.body).not.toHaveProperty("user");
     });
   });
 
