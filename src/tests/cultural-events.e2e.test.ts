@@ -89,21 +89,22 @@ describe("Router /cultural-events", () => {
 
       const response = await testAgent.get("/cultural-events");
       expect(response.statusCode).toBe(StatusCodes.OK);
-      expect(response.body).toHaveLength(SIZE);
+      expect(response.body.data).toHaveLength(SIZE);
       for (let i = 0; i < SIZE; i++) {
-        expect(response.body[i]).toHaveProperty("id");
-        expect(response.body[i]).toHaveProperty("title");
-        expect(response.body[i]).not.toHaveProperty("description");
-        expect(response.body[i]).toHaveProperty("date");
-        expect(response.body[i].location).toHaveProperty("name");
-        expect(response.body[i].location).toHaveProperty("city");
-        expect(response.body[i].location).toHaveProperty("state");
-        expect(response.body[i].location).not.toHaveProperty("street");
-        expect(response.body[i].location).not.toHaveProperty("cep");
-        expect(response.body[i].organizer).toHaveProperty("id");
-        expect(response.body[i].organizer).toHaveProperty("name");
-        expect(response.body[i].organizer).not.toHaveProperty("description");
-        expect(response.body[i].organizer).not.toHaveProperty("contancts");
+        const item = response.body.data[i];
+        expect(item).toHaveProperty("id");
+        expect(item).toHaveProperty("title");
+        expect(item).not.toHaveProperty("description");
+        expect(item).toHaveProperty("date");
+        expect(item.location).toHaveProperty("name");
+        expect(item.location).toHaveProperty("city");
+        expect(item.location).toHaveProperty("state");
+        expect(item.location).not.toHaveProperty("street");
+        expect(item.location).not.toHaveProperty("cep");
+        expect(item.organizer).toHaveProperty("id");
+        expect(item.organizer).toHaveProperty("name");
+        expect(item.organizer).not.toHaveProperty("description");
+        expect(item.organizer).not.toHaveProperty("contacts");
       }
     });
   });
