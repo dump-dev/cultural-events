@@ -1,13 +1,18 @@
 import { Repository } from "typeorm";
-import { CreateCuturalEventDTO } from "./dtos/create-cutural-event.dto";
-import Location from "../../typeorm/entities/Location";
-import Organizer from "../../typeorm/entities/Organizer";
-import CulturalEvent from "../../typeorm/entities/CulturalEvent";
-import { OrganizerNotFoundError } from "../../errors/OrganizerNotFoundError";
-import { UpdateCulturalEventDTO } from "./dtos/update-cultural-event.dto";
 import { CulturalEventNotFoundError } from "../../errors/CulturalEventNotFoundError";
 import NotCulturalEventOwnerError from "../../errors/NotCulturalEventOwnerError";
+import { OrganizerNotFoundError } from "../../errors/OrganizerNotFoundError";
+import CulturalEvent from "../../typeorm/entities/CulturalEvent";
+import Location from "../../typeorm/entities/Location";
+import Organizer from "../../typeorm/entities/Organizer";
+import PaginationHelper from "../pagination/pagination.helper";
+import { CreateCuturalEventDTO } from "./dtos/create-cutural-event.dto";
 import { DeleteCulturalEventDTO } from "./dtos/delete-cultural-event.dto";
+import {
+  GetCulturalEventsWithoutPaginationDTO,
+  GetCulturalEventsWithPaginationDTO,
+} from "./dtos/get-cultural-events.dto";
+import { UpdateCulturalEventDTO } from "./dtos/update-cultural-event.dto";
 
 export default class CuturalEventsService {
   constructor(
@@ -82,10 +87,34 @@ export default class CuturalEventsService {
     return organizer.id;
   }
 
-  async getCuturalEvents() {
-    return this.cuturalEventsRepository.find({
-      relations: { organizer: true, location: true },
-    });
+  async getTotalCount(getDTO: GetCulturalEventsWithoutPaginationDTO) {
+    const { startDate, endDate } = getDTO;
+    const query = this.cuturalEventsRepository
+      .createQueryBuilder("event")
+      .where("event.date >= :startDate", { startDate });
+
+    if (endDate) {
+      query.andWhere("event.date <= :endDate", { endDate });
+    }
+    return query.getCount();
+  }
+
+  async getCuturalEvents(getDTO: GetCulturalEventsWithPaginationDTO) {
+    const { page, perPage, startDate, endDate } = getDTO;
+    const query = this.cuturalEventsRepository
+      .createQueryBuilder("event")
+      .innerJoinAndSelect("event.organizer", "organizer")
+      .innerJoinAndSelect("event.location", "location")
+      .where("event.date >= :startDate", { startDate })
+      .orderBy("event.date", "DESC")
+      .skip(PaginationHelper.skip(page, perPage))
+      .take(PaginationHelper.take(perPage));
+
+    if (endDate) {
+      query.andWhere("event.date <= :endDate", { endDate });
+    }
+
+    return query.getMany();
   }
 
   async getCulturalEventById(culturalEventId: string) {

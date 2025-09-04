@@ -9,6 +9,8 @@ import { CulturalEventMapper } from "./cultural-event-mapper";
 import { updateCulturalEventSchema } from "./schemas/update-cultural.event.schema";
 import { deleteCulturalEventSchema } from "./schemas/delete-cultural-event.schema";
 import { getByCulturalEventIdSchema } from "./schemas/get-by-cultural-event-id.schema";
+import { getCulturalEventsWithPaginationSchema } from "./schemas/get-cultural-events.schema";
+import PaginationMapper from "../pagination/pagination.mapper";
 
 export default class CuturalEventsController {
   constructor(
@@ -29,8 +31,26 @@ export default class CuturalEventsController {
   }
 
   async getAll(req: Request, res: Response) {
-    const culturalEvents = await this.eventsService.getCuturalEvents();
-    return res.send(culturalEvents.map(CulturalEventMapper.toSummaryWithOrganizerDTO));
+    const parseResult = getCulturalEventsWithPaginationSchema.safeParse(
+      req.query
+    );
+    if (!parseResult.success) {
+      return res.status(StatusCodes.BAD_REQUEST).send(parseResult.error.issues);
+    }
+    const query = parseResult.data;
+    const countCulturaEvents = await this.eventsService.getTotalCount(query);
+    const culturalEvents = await this.eventsService.getCuturalEvents(query);
+    const paginationMeta = {
+      page: query.page,
+      perPage: query.perPage,
+      totalItems: countCulturaEvents,
+    };
+    return res.send(
+      PaginationMapper.toPaginatedResponseDTO(
+        paginationMeta,
+        culturalEvents.map(CulturalEventMapper.toSummaryWithOrganizerDTO)
+      )
+    );
   }
 
   async getById(req: Request, res: Response) {
