@@ -107,6 +107,144 @@ describe("Router /cultural-events", () => {
         expect(item.organizer).not.toHaveProperty("contacts");
       }
     });
+
+    test("should return 200 with page 1 when query params are ?page=1", async () => {
+      const SIZE = 5;
+      for (let i = 0; i < SIZE; i++) {
+        const { organizerId, accessToken } = await createAndLoginOrganizer(
+          testAgent,
+          makeFakeOrganizerData()
+        );
+
+        await createCulturalEvent({
+          testAgent,
+          organizer: {
+            id: organizerId,
+            accessToken,
+          },
+        });
+      }
+
+      const response = await testAgent.get("/cultural-events?page=1");
+      expect(response.statusCode).toBe(StatusCodes.OK);
+      expect(response.body.page).toBe(1);
+      expect(response.body.totalItems).toBe(SIZE);
+      expect(response.body).toHaveProperty("perPage");
+      expect(response.body).toHaveProperty("totalPages");
+      expect(response.body.data).toHaveLength(SIZE);
+    });
+
+    test("should return 200 with page 1 when query params are ?page=1&per-page=2", async () => {
+      const SIZE = 5;
+      for (let i = 0; i < SIZE; i++) {
+        const { organizerId, accessToken } = await createAndLoginOrganizer(
+          testAgent,
+          makeFakeOrganizerData()
+        );
+
+        await createCulturalEvent({
+          testAgent,
+          organizer: {
+            id: organizerId,
+            accessToken,
+          },
+        });
+      }
+      const page = 1;
+      const perPage = 2;
+      const totalPages = Math.ceil(SIZE / perPage);
+      const response = await testAgent.get(
+        `/cultural-events?page=${page}&per-page=${perPage}`
+      );
+      expect(response.statusCode).toBe(StatusCodes.OK);
+      expect(response.body.page).toBe(page);
+      expect(response.body.perPage).toBe(perPage);
+      expect(response.body.totalItems).toBe(SIZE);
+      expect(response.body.totalPages).toBe(totalPages);
+      expect(response.body.data).toHaveLength(perPage);
+    });
+
+    test("should return 200 with data requested page when navigate between pages", async () => {
+      const SIZE = 5;
+      const culturalEventIds = [];
+      for (let i = 0; i < SIZE; i++) {
+        const { organizerId, accessToken } = await createAndLoginOrganizer(
+          testAgent,
+          makeFakeOrganizerData()
+        );
+
+        const responseCreate = await createCulturalEvent({
+          testAgent,
+          organizer: {
+            id: organizerId,
+            accessToken,
+          },
+        });
+        culturalEventIds.push(responseCreate.body.id);
+      }
+
+      const perPage = 1;
+      const totalPages = Math.ceil(SIZE / perPage);
+      for (let page = 1; page <= SIZE; page++) {
+        const response = await testAgent.get(
+          `/cultural-events?page=${page}&per-page=${perPage}`
+        );
+
+        expect(response.statusCode).toBe(StatusCodes.OK);
+        expect(response.body.page).toBe(page);
+        expect(response.body.perPage).toBe(perPage);
+        expect(response.body.totalItems).toBe(SIZE);
+        expect(response.body.totalPages).toBe(totalPages);
+        expect(culturalEventIds).toContain(response.body.data[0].id);
+      }
+    });
+
+    test("should return 200 with empty list when requested page exceeds total pages", async () => {
+      const SIZE = 1;
+      for (let i = 0; i < SIZE; i++) {
+        const { organizerId, accessToken } = await createAndLoginOrganizer(
+          testAgent,
+          makeFakeOrganizerData()
+        );
+
+        await createCulturalEvent({
+          testAgent,
+          organizer: {
+            id: organizerId,
+            accessToken,
+          },
+        });
+      }
+      const page = 2;
+      const perPage = 10;
+      const totalPages = Math.ceil(SIZE / perPage);
+      const response = await testAgent.get(
+        `/cultural-events?page=${page}&per-page=${perPage}`
+      );
+      expect(response.statusCode).toBe(StatusCodes.OK);
+      expect(response.body.page).toBe(page);
+      expect(response.body.perPage).toBe(perPage);
+      expect(response.body.totalItems).toBe(SIZE);
+      expect(response.body.totalPages).toBe(totalPages);
+      expect(response.body.data).toHaveLength(0);
+    });
+
+    test("should return 400 when requested page is less than or equal to 0", async () => {
+      expect((await testAgent.get("/cultural-events?page=0")).statusCode).toBe(
+        StatusCodes.BAD_REQUEST
+      );
+      expect((await testAgent.get("/cultural-events?page=-1")).statusCode).toBe(
+        StatusCodes.BAD_REQUEST
+      );
+    });
+    test("should return 400 when requested per-page is less than or equal to 0", async () => {
+      expect(
+        (await testAgent.get("/cultural-events?per-page=0")).statusCode
+      ).toBe(StatusCodes.BAD_REQUEST);
+      expect(
+        (await testAgent.get("/cultural-events?per-page=-1")).statusCode
+      ).toBe(StatusCodes.BAD_REQUEST);
+    });
   });
 
   describe("GET /cultural-events/:culturalEventId", () => {
